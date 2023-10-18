@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\GivingGifts.Wishlists.UseCases\GivingGifts.Wishlists.UseCases.csproj" />
+      <ProjectReference Include="..\GivingGifts.Wishlists.Core\GivingGifts.Wishlists.Core.csproj" />
+      <ProjectReference Include="..\GivingGifts.Wishlists.Infrastructure\GivingGifts.Wishlists.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
