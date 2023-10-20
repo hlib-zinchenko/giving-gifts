@@ -12,6 +12,7 @@ public class EfWishlistRepository : IWishlistRepository
     {
         _dbContext = dbContext;
     }
+
     public async Task SaveChangesAsync()
     {
         await _dbContext.SaveChangesAsync();
@@ -21,6 +22,12 @@ public class EfWishlistRepository : IWishlistRepository
     {
         return _dbContext.Wishlists.Include(w => w.Wishes)
             .FirstOrDefaultAsync(w => w.Id == id);
+    }
+
+    public async Task<IEnumerable<Wishlist>> GetByUserAsync(Guid userId)
+    {
+        return await _dbContext.Wishlists.Where(w => w.UserId == userId)
+            .ToListAsync();
     }
 
     public async Task AddAsync(Wishlist wishlist)

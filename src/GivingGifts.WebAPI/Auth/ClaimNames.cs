@@ -4,7 +4,7 @@ using System.Security.Claims;
 namespace GivingGifts.WebAPI.Auth;
 
 /// <summary>
-/// Available Claim Names.
+///     Available Claim Names.
 /// </summary>
 public static class ClaimNames
 {

@@ -1,16 +1,10 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using SharedKernel;
+using GivingGifts.SharedKernel.Core;
 
 namespace GivingGifts.Wishlists.Core.Entities;
 
 public class Wishlist : EntityBase<Guid>, IAggregationRoot
 {
-    public string Name { get; } = null!;
-    public Guid UserId { get; }
-
-    [NotMapped] public IReadOnlyCollection<Wish> Wishes => _wishes.AsReadOnly();
-
-    private List<Wish> _wishes = new ();
+    private readonly List<Wish> _wishes = new();
 
     private Wishlist()
     {
@@ -21,6 +15,11 @@ public class Wishlist : EntityBase<Guid>, IAggregationRoot
         UserId = userId;
         Name = name;
     }
+
+    public string Name { get; } = null!;
+    public Guid UserId { get; }
+
+    public IEnumerable<Wish> Wishes => _wishes.AsReadOnly();
 
     public Wish AddWish(string name, string? url)
     {

@@ -1,14 +1,14 @@
 using Ardalis.Result;
+using GivingGifts.SharedKernel.Core;
 using GivingGifts.Wishlists.Core;
 using MediatR;
-using SharedKernel;
 
-namespace GivingGifts.Wishlists.Commands.Delete;
+namespace GivingGifts.Wishlists.UseCases.Delete;
 
 public class DeleteWishlistCommandHandler : IRequestHandler<DeleteWishlistCommand, Result>
 {
-    private readonly IWishlistRepository _wishlistRepository;
     private readonly IUserContext _userContext;
+    private readonly IWishlistRepository _wishlistRepository;
 
     public DeleteWishlistCommandHandler(
         IWishlistRepository wishlistRepository,
@@ -21,11 +21,8 @@ public class DeleteWishlistCommandHandler : IRequestHandler<DeleteWishlistComman
     public async Task<Result> Handle(DeleteWishlistCommand request, CancellationToken cancellationToken)
     {
         var wishlist = await _wishlistRepository.GetAsync(request.WishlistId);
-        if (wishlist == null || wishlist.UserId != _userContext.UserId)
-        {
-            return Result.NotFound();
-        }
-        
+        if (wishlist == null || wishlist.UserId != _userContext.UserId) return Result.NotFound();
+
         _wishlistRepository.Delete(wishlist);
         await _wishlistRepository.SaveChangesAsync();
         return Result.Success();

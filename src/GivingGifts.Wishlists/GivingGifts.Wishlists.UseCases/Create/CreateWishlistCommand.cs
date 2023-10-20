@@ -1,7 +1,7 @@
 using Ardalis.Result;
 using MediatR;
 
-namespace GivingGifts.Wishlists.Commands.Create;
+namespace GivingGifts.Wishlists.UseCases.Create;
 
 public record CreateWishlistCommand(string? Name)
-    : IRequest<Result<CreateWishlistCommandResult>>;
+    : IRequest<Result<WishlistDto>>;

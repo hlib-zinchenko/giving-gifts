@@ -7,17 +7,14 @@ public static class IdentityResultExtensions
 {
     public static IEnumerable<ValidationError> AsErrors(this IdentityResult identityResult)
     {
-        if (identityResult.Succeeded)
-        {
-            return Array.Empty<ValidationError>();
-        }
-        
+        if (identityResult.Succeeded) return Array.Empty<ValidationError>();
+
         return identityResult.Errors.Select(e => new ValidationError
         {
             Identifier = string.Empty,
             ErrorMessage = e.Description,
             ErrorCode = e.Code,
-            Severity = ValidationSeverity.Error,
+            Severity = ValidationSeverity.Error
         });
     }
 }

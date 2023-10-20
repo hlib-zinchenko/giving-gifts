@@ -1,4 +1,4 @@
-﻿using SharedKernel;
+﻿using GivingGifts.SharedKernel.Core;
 
 namespace GivingGifts.WebAPI.Auth;
 
@@ -17,9 +17,7 @@ public class HttpUserContextResolver : IUserContextResolver
         var principal = context?.User;
 
         if (principal == null || principal.Identity is { IsAuthenticated: false })
-        {
             throw new Exception("User is not authenticated");
-        }
 
         var userId = Guid.Parse(principal.Claims.First(x => x.Type == ClaimNames.UserId).Value);
         var role = principal.Claims.First(x => x.Type == ClaimNames.Role).Value;

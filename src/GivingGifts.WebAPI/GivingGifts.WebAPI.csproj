@@ -8,14 +8,26 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Ardalis.Result.AspNetCore" Version="7.1.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.12">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GivingGifts.Wishlists\GivingGifts.Wishlists.API\GivingGifts.Wishlists.API.csproj" />
-      <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
+        <ProjectReference Include="..\GivingGifts.Users\GivingGifts.Users.API\GivingGifts.Users.API.csproj"/>
+        <ProjectReference Include="..\GivingGifts.Users\GivingGifts.Users.Core\GivingGifts.Users.Core.csproj"/>
+        <ProjectReference Include="..\GivingGifts.Users\GivingGifts.Users.Infrastructure\GivingGifts.Users.Infrastructure.csproj"/>
+        <ProjectReference Include="..\GivingGifts.Users\GivingGifts.Users.UseCases\GivingGifts.Users.UseCases.csproj"/>
+        <ProjectReference Include="..\GivingGifts.Wishlists\GivingGifts.Wishlists.API\GivingGifts.Wishlists.API.csproj"/>
+        <ProjectReference Include="..\GivingGifts.Wishlists\GivingGifts.Wishlists.Infrastructure\GivingGifts.Wishlists.Infrastructure.csproj"/>
+        <ProjectReference Include="..\GivingGifts.Wishlists\GivingGifts.Wishlists.UseCases\GivingGifts.Wishlists.UseCases.csproj"/>
+        <ProjectReference Include="..\SharedKernel\GivingGifts.SharedKernel.Data\GivingGifts.SharedKernel.Data.csproj" />
     </ItemGroup>
 
 </Project>

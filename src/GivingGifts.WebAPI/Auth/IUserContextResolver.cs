@@ -1,4 +1,4 @@
-﻿using SharedKernel;
+﻿using GivingGifts.SharedKernel.Core;
 
 namespace GivingGifts.WebAPI.Auth;
 

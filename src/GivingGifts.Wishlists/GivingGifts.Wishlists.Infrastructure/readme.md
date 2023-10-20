@@ -1,0 +1,2 @@
+`dotnet ef migrations add InitMigration -s "../../GivingGifts.WebAPI" -p "GivingGifts.Wishlists.Infrastructure.csproj" -c GivingGifts.Wishlists.Infrastructure.Data.WishlistsDbContext -o Data/Migrations
+`

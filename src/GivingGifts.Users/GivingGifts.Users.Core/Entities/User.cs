@@ -1,16 +1,12 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using GivingGifts.Users.Core.DomainEvents;
 using Microsoft.AspNetCore.Identity;
-using SharedKernel;
+using GivingGifts.SharedKernel.Core;
 
 namespace GivingGifts.Users.Core.Entities;
 
 public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAggregationRoot
 {
-    public string FirstName { get; }
-    public string LastName { get; }
-    [NotMapped] public IReadOnlyCollection<DomainEventBase> Events => _events.AsReadOnly();
-
     private readonly List<DomainEventBase> _events = new();
 
     private User()
@@ -23,6 +19,12 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAggregationRoot
         FirstName = firstName;
         LastName = lastName;
         Email = email;
+        UserName = email;
         _events.Add(new UserCreatedDomainEvent(dateTimeProvider, Id));
     }
+
+    public string FirstName { get; }
+    public string LastName { get; }
+    public List<UserRole> UserRoles { get; } = new();
+    [NotMapped] public IReadOnlyCollection<DomainEventBase> Events => _events.AsReadOnly();
 }
