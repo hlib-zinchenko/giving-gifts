@@ -9,10 +9,13 @@ var app = builder
     .ConfigureServices()
     .ConfigurePipeline();
 
-using (var scope = app.Services.CreateScope())
+if (app.Environment.IsDevelopment())
 {
-    await scope.EnsureDbCreatedAndMigrated<UsersDbContext>();
-    await scope.EnsureDbCreatedAndMigrated<WishlistsDbContext>();
+    using (var scope = app.Services.CreateScope())
+    {
+        await scope.EnsureDbCreatedAndMigrated<UsersDbContext>();
+        await scope.EnsureDbCreatedAndMigrated<WishlistsDbContext>();
+    }
 }
 
 app.Run();
