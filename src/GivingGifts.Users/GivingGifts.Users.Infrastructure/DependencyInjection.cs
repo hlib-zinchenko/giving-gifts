@@ -1,3 +1,4 @@
+using GivingGifts.SharedKernel.Core.Extensions;
 using GivingGifts.Users.Core;
 using GivingGifts.Users.Core.Entities;
 using GivingGifts.Users.Infrastructure.Data;
@@ -19,8 +20,7 @@ public static class DependencyInjection
         services.AddDbContext<UsersDbContext>(options => options
             .UseNpgsql(configuration["ConnectionStrings:Users"]));
 
-        services.Configure<JwtOptions>(
-            configuration.GetSection("Jwt"));
+        services.AddValidatableOptions<JwtOptions>("Jwt");
 
         services
             .AddIdentityCore<User>(c =>

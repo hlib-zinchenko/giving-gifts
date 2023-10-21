@@ -30,10 +30,6 @@ public static class WebApplicationBuilderExtensions
             .AddUsersInfrastructure(builder.Configuration)
             .AddUsersUseCases();
 
-        builder.Services.Configure<JwtOptions>(
-            builder.Configuration.GetSection(
-                "Jwt"));
-
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -47,7 +43,9 @@ public static class WebApplicationBuilderExtensions
                     ValidAudience = builder.Configuration["JWT:ValidAudience"],
                     ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                        Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]
+                                               ?? throw new NullReferenceException(
+                                                   "Missing JWT:Secret section in configuration")))
                 };
             });
 
