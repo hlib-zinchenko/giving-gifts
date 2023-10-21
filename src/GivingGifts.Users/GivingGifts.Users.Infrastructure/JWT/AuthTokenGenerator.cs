@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.Users.Core.Entities;
-using GivingGifts.Users.Core.Models;
 using GivingGifts.Users.UseCases;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -23,7 +22,7 @@ public class AuthTokenGenerator : IAuthTokenGenerator
         _options = options.Value;
     }
 
-    public AuthTokens Generate(User user)
+    public AuthTokensDto Generate(User user)
     {
         var key = Encoding.UTF8.GetBytes
             (_options.Secret);
@@ -51,6 +50,6 @@ public class AuthTokenGenerator : IAuthTokenGenerator
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var stringToken = tokenHandler.WriteToken(token);
 
-        return new AuthTokens(stringToken);
+        return new AuthTokensDto(stringToken);
     }
 }

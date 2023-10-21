@@ -3,7 +3,7 @@ using MediatR;
 
 namespace GivingGifts.Users.UseCases.Register;
 
-public class RegisterUserCommand : IRequest<Result<RegisterUserCommandResult>>
+public class RegisterUserCommand : IRequest<Result<AuthTokensDto>>
 {
     public RegisterUserCommand(string firsName, string lastName, string email, string password)
     {

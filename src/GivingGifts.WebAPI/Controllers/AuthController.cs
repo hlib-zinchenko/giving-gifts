@@ -1,5 +1,6 @@
 using Ardalis.Result.AspNetCore;
 using GivingGifts.Users.API.DTO;
+using GivingGifts.Users.UseCases;
 using GivingGifts.Users.UseCases.Login;
 using GivingGifts.Users.UseCases.Register;
 using MediatR;
@@ -19,14 +20,14 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<LoginUserCommandResult>> Login([FromBody] LoginDto dto)
+    public async Task<ActionResult<AuthTokensDto>> Login([FromBody] LoginDto dto)
     {
         var result = await _mediator.Send(new LoginUserCommand(dto.Email, dto.Password));
         return this.ToActionResult(result);
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<RegisterUserCommandResult>> Register([FromBody] RegisterDto dto)
+    public async Task<ActionResult<AuthTokensDto>> Register([FromBody] RegisterDto dto)
     {
         var result = await _mediator.Send(
             new RegisterUserCommand(dto.FirstName, dto.LastName, dto.Email, dto.Password));

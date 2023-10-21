@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GivingGifts.Users.UseCases.Login;
 
-public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, Result<LoginUserCommandResult>>
+public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, Result<AuthTokensDto>>
 {
     private readonly IAuthTokenGenerator _authTokenGenerator;
     private readonly UserManager<User> _userManager;
@@ -22,16 +22,16 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, Result<
         _userRepository = userRepository;
     }
 
-    public async Task<Result<LoginUserCommandResult>> Handle(LoginUserCommand request,
+    public async Task<Result<AuthTokensDto>> Handle(LoginUserCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByEmail(request.Email);
-        if (user == null) return Result<LoginUserCommandResult>.Unauthorized();
+        if (user == null) return Result<AuthTokensDto>.Unauthorized();
         var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
 
-        if (!isPasswordValid) return Result<LoginUserCommandResult>.Unauthorized();
+        if (!isPasswordValid) return Result<AuthTokensDto>.Unauthorized();
 
         var tokens = _authTokenGenerator.Generate(user);
-        return Result<LoginUserCommandResult>.Success(new LoginUserCommandResult(tokens.AuthToken));
+        return Result<AuthTokensDto>.Success(tokens);
     }
 }

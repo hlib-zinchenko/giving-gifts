@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel", "SharedKerne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GivingGifts.SharedKernel.Core", "src\SharedKernel\GivingGifts.SharedKernel.Core\GivingGifts.SharedKernel.Core.csproj", "{ED6FA995-FF02-4BE7-AFDD-51AF18C482A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GivingGifts.SharedKernel.Data", "src\SharedKernel\GivingGifts.SharedKernel.Data\GivingGifts.SharedKernel.Data.csproj", "{10AE3A80-460E-4765-B889-4AA31E659F3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GivingGifts.SharedKernel.Infrastructure", "src\SharedKernel\GivingGifts.SharedKernel.Infrastructure\GivingGifts.SharedKernel.Infrastructure.csproj", "{10AE3A80-460E-4765-B889-4AA31E659F3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

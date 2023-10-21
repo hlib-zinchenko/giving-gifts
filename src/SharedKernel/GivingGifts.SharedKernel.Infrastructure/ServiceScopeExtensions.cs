@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GivingGifts.SharedKernel.Data;
+namespace GivingGifts.SharedKernel.Infrastructure;
 
 public static class ServiceScopeExtensions
 {

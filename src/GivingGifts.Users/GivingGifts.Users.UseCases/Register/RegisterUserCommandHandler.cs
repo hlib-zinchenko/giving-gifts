@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GivingGifts.Users.UseCases.Register;
 
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Result<RegisterUserCommandResult>>
+public class RegisterUserCommandHandler
+    : IRequestHandler<RegisterUserCommand, Result<AuthTokensDto>>
 {
     private readonly IAuthTokenGenerator _authTokenGenerator;
     private readonly IDateTimeProvider _dateTimeProvider;
@@ -23,21 +24,21 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         _authTokenGenerator = authTokenGenerator;
     }
 
-    public async Task<Result<RegisterUserCommandResult>> Handle(
+    public async Task<Result<AuthTokensDto>> Handle(
         RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var user = new User(_dateTimeProvider, request.FirsName, request.LastName, request.Email);
         var identityResult = await _userManager.CreateAsync(user, request.Password);
         if (!identityResult.Succeeded)
         {
-            return Result<RegisterUserCommandResult>.Invalid(identityResult.AsErrors().ToList());
+            return Result<AuthTokensDto>.Invalid(identityResult.AsErrors().ToList());
         }
 
         var addToRoleResult = await _userManager.AddToRoleAsync(user, RoleNames.User);
 
         return addToRoleResult.Succeeded
-            ? Result<RegisterUserCommandResult>.Success(
-                new RegisterUserCommandResult(_authTokenGenerator.Generate(user).AuthToken))
-            : Result<RegisterUserCommandResult>.Invalid(addToRoleResult.AsErrors().ToList());
+            ? Result<AuthTokensDto>.Success(
+                _authTokenGenerator.Generate(user))
+            : Result<AuthTokensDto>.Invalid(addToRoleResult.AsErrors().ToList());
     }
 }

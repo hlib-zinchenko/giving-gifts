@@ -27,7 +27,7 @@
         <ProjectReference Include="..\GivingGifts.Wishlists\GivingGifts.Wishlists.API\GivingGifts.Wishlists.API.csproj"/>
         <ProjectReference Include="..\GivingGifts.Wishlists\GivingGifts.Wishlists.Infrastructure\GivingGifts.Wishlists.Infrastructure.csproj"/>
         <ProjectReference Include="..\GivingGifts.Wishlists\GivingGifts.Wishlists.UseCases\GivingGifts.Wishlists.UseCases.csproj"/>
-        <ProjectReference Include="..\SharedKernel\GivingGifts.SharedKernel.Data\GivingGifts.SharedKernel.Data.csproj" />
+        <ProjectReference Include="..\SharedKernel\GivingGifts.SharedKernel.Infrastructure\GivingGifts.SharedKernel.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
