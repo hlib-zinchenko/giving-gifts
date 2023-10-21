@@ -1,8 +1,6 @@
 using System.Text;
 using GivingGifts.SharedKernel.Core;
-using GivingGifts.SharedKernel.Infrastructure;
 using GivingGifts.Users.Infrastructure;
-using GivingGifts.Users.Infrastructure.Data;
 using GivingGifts.Users.Infrastructure.JWT;
 using GivingGifts.Users.UseCases;
 using GivingGifts.WebAPI.Auth;
