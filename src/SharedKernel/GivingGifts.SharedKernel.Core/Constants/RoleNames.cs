@@ -1,4 +1,4 @@
-﻿namespace GivingGifts.SharedKernel.Core;
+﻿namespace GivingGifts.SharedKernel.Core.Constants;
 
 public static class RoleNames
 {

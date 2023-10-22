@@ -1,4 +1,6 @@
-﻿namespace GivingGifts.SharedKernel.Core;
+﻿using GivingGifts.SharedKernel.Core.Constants;
+
+namespace GivingGifts.SharedKernel.Core;
 
 public interface IUserContext
 {

@@ -1,7 +1,8 @@
+using System.Reflection;
 using System.Text;
 using GivingGifts.SharedKernel.Core;
+using GivingGifts.SharedKernel.Core.Extensions;
 using GivingGifts.Users.Infrastructure;
-using GivingGifts.Users.Infrastructure.JWT;
 using GivingGifts.Users.UseCases;
 using GivingGifts.WebAPI.Auth;
 using GivingGifts.Wishlists.Core;
@@ -29,6 +30,10 @@ public static class WebApplicationBuilderExtensions
             .AddWishlistsUseCases()
             .AddUsersInfrastructure(builder.Configuration)
             .AddUsersUseCases();
+
+        services.AddMediatR(
+            Assembly.GetAssembly(typeof(GivingGifts.Wishlists.UseCases.DependencyInjection))!,
+            Assembly.GetAssembly(typeof(GivingGifts.Users.UseCases.DependencyInjection))!);
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
