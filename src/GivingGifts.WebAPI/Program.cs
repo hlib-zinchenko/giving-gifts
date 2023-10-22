@@ -2,6 +2,7 @@ using GivingGifts.SharedKernel.Infrastructure;
 using GivingGifts.Users.Infrastructure.Data;
 using GivingGifts.WebAPI;
 using GivingGifts.Wishlists.Infrastructure.Data;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 

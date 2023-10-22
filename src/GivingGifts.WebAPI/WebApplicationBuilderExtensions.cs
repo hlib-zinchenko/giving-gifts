@@ -10,6 +10,7 @@ using GivingGifts.Wishlists.Infrastructure;
 using GivingGifts.Wishlists.UseCases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace GivingGifts.WebAPI;
 
@@ -17,6 +18,11 @@ public static class WebApplicationBuilderExtensions
 {
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .CreateLogger();
+        builder.Host.UseSerilog();
+
         var services = builder.Services;
         services.AddControllers();
         services.AddEndpointsApiExplorer();
@@ -32,8 +38,8 @@ public static class WebApplicationBuilderExtensions
             .AddUsersUseCases();
 
         services.AddMediatR(
-            Assembly.GetAssembly(typeof(GivingGifts.Wishlists.UseCases.DependencyInjection))!,
-            Assembly.GetAssembly(typeof(GivingGifts.Users.UseCases.DependencyInjection))!);
+            Assembly.GetAssembly(typeof(Wishlists.UseCases.DependencyInjection))!,
+            Assembly.GetAssembly(typeof(Users.UseCases.DependencyInjection))!);
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -63,6 +69,8 @@ public static class WebApplicationBuilderExtensions
 
     public static WebApplication ConfigurePipeline(this WebApplication app)
     {
+        app.UseSerilogRequestLogging();
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

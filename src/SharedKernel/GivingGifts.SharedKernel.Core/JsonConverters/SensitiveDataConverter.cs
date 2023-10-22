@@ -30,7 +30,7 @@ internal class SensitiveDataConverter : JsonConverter<object>
                     string.Equals(p, property.Name, StringComparison.CurrentCultureIgnoreCase))
                 || property.GetCustomAttribute<SensitiveDataAttribute>() != null)
             {
-                writer.WriteString(property.Name, "*SENSITIVE DATA*");
+                writer.WriteString(property.Name, "**SENSITIVE**");
             }
             else
             {
