@@ -1,4 +1,5 @@
 using Ardalis.Result.AspNetCore;
+using Asp.Versioning;
 using GivingGifts.Wishlists.API.DTO;
 using GivingGifts.Wishlists.UseCases;
 using GivingGifts.Wishlists.UseCases.Create;
@@ -8,10 +9,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GivingGifts.WebAPI.Controllers;
+namespace GivingGifts.WebAPI.Controllers.v1;
 
 [ApiController]
-[Route("api/wishlists")]
+[ApiVersion(1.0)]
+[Route("api/v{version:apiVersion}/wishlists")]
 [Authorize]
 public class WishlistsController : ControllerBase
 {

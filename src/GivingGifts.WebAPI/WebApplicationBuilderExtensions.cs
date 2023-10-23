@@ -1,10 +1,14 @@
 using System.Reflection;
 using System.Text;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+using Asp.Versioning.Conventions;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.SharedKernel.Core.Extensions;
 using GivingGifts.Users.Infrastructure;
 using GivingGifts.Users.UseCases;
 using GivingGifts.WebAPI.Auth;
+using GivingGifts.WebAPI.Swagger;
 using GivingGifts.Wishlists.Core;
 using GivingGifts.Wishlists.Infrastructure;
 using GivingGifts.Wishlists.UseCases;
@@ -26,7 +30,10 @@ public static class WebApplicationBuilderExtensions
         var services = builder.Services;
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+            // c.ve
+        });
 
         services.AddAuthorization();
         services
@@ -64,6 +71,35 @@ public static class WebApplicationBuilderExtensions
         services.AddScoped<IUserContextResolver, HttpUserContextResolver>();
         services.AddScoped<IUserContext>(serviceProvider =>
             serviceProvider.GetRequiredService<IUserContextResolver>().Resolve());
+
+        services.AddApiVersioning(
+                options =>
+                {
+                    options.DefaultApiVersion = new ApiVersion(1.0);
+                    options.AssumeDefaultVersionWhenUnspecified = true;
+                    // reporting api versions will return the headers
+                    // "api-supported-versions" and "api-deprecated-versions"
+                    options.ReportApiVersions = true;
+                    options.ApiVersionReader = ApiVersionReader.Combine(
+                        new UrlSegmentApiVersionReader(),
+                        new QueryStringApiVersionReader("api-version"),
+                        new HeaderApiVersionReader("X-Version"),
+                        new MediaTypeApiVersionReader("x-version"));
+                })
+            .AddMvc(
+                options =>
+                {
+                    // automatically applies an api version based on the name of
+                    // the defining controller's namespace
+                    options.Conventions.Add(new VersionByNamespaceConvention());
+                })
+            .AddApiExplorer(setup =>
+            {
+                setup.GroupNameFormat = "'v'VVV";
+                setup.SubstituteApiVersionInUrl = true;
+            });
+        services.ConfigureOptions<NamedSwaggerGenOptions>();
+
         return builder.Build();
     }
 
@@ -74,7 +110,16 @@ public static class WebApplicationBuilderExtensions
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+
+            var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+            app.UseSwaggerUI(options =>
+            {
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerEndpoint(
+                        $"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant()); 
+                } 
+            });
         }
 
         app.UseHttpsRedirection();

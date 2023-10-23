@@ -1,4 +1,5 @@
 using Ardalis.Result.AspNetCore;
+using Asp.Versioning;
 using GivingGifts.Users.API.DTO;
 using GivingGifts.Users.UseCases;
 using GivingGifts.Users.UseCases.Login;
@@ -6,10 +7,11 @@ using GivingGifts.Users.UseCases.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GivingGifts.WebAPI.Controllers;
+namespace GivingGifts.WebAPI.Controllers.v1;
 
 [ApiController]
-[Route("api/auth")]
+[ApiVersion(1.0)]
+[Route("api/v{version:apiVersion}/auth")]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -19,6 +21,7 @@ public class AuthController : ControllerBase
         _mediator = mediator;
     }
 
+    [MapToApiVersion("1.0")]
     [HttpPost("login")]
     public async Task<ActionResult<AuthTokensDto>> Login([FromBody] LoginDto dto)
     {
@@ -26,6 +29,7 @@ public class AuthController : ControllerBase
         return this.ToActionResult(result);
     }
 
+    [MapToApiVersion("1.0")]
     [HttpPost("register")]
     public async Task<ActionResult<AuthTokensDto>> Register([FromBody] RegisterDto dto)
     {

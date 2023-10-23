@@ -1,4 +1,3 @@
-using GivingGifts.SharedKernel.Core;
 using GivingGifts.SharedKernel.Core.Constants;
 using GivingGifts.Users.Core.Entities;
 using Microsoft.EntityFrameworkCore;
