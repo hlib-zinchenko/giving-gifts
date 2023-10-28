@@ -28,6 +28,7 @@ public class WishlistsController : ControllerBase
     }
 
     [HttpGet]
+    [HttpHead]
     public async Task<Result<IEnumerable<WishlistDto>>> Get()
     {
         var result = await _mediator.Send(new UserWishlistsQuery());
