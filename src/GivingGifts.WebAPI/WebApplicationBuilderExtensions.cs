@@ -1,5 +1,8 @@
+using System.Net;
 using System.Reflection;
 using System.Text;
+using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Asp.Versioning.Conventions;
@@ -28,12 +31,21 @@ public static class WebApplicationBuilderExtensions
         builder.Host.UseSerilog();
 
         var services = builder.Services;
-        services.AddControllers();
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(c =>
+        services.AddControllers(configure =>
         {
-            // c.ve
+            configure.ReturnHttpNotAcceptable = true;
+            configure.AddResultConvention(resultStatusMap => resultStatusMap
+                .AddDefaultMap()
+                .For(ResultStatus.Ok, HttpStatusCode.OK, resultStatusOptions => resultStatusOptions
+                    .For("POST", HttpStatusCode.Created)
+                    .For("DELETE", HttpStatusCode.NoContent)
+                    .For("PUT", HttpStatusCode.NoContent))
+                .For(ResultStatus.Error, HttpStatusCode.InternalServerError)
+                .For(ResultStatus.Invalid, HttpStatusCode.UnprocessableEntity)
+            );
         });
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
 
         services.AddAuthorization();
         services
@@ -109,6 +121,7 @@ public static class WebApplicationBuilderExtensions
 
         if (app.Environment.IsDevelopment())
         {
+            app.UseDeveloperExceptionPage();
             app.UseSwagger();
 
             var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();

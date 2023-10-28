@@ -1,3 +1,4 @@
+using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
 using GivingGifts.Users.API.DTO;
@@ -12,6 +13,7 @@ namespace GivingGifts.WebAPI.Controllers.v1;
 [ApiController]
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}/auth")]
+[TranslateResultToActionResult]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -23,18 +25,18 @@ public class AuthController : ControllerBase
 
     [MapToApiVersion("1.0")]
     [HttpPost("login")]
-    public async Task<ActionResult<AuthTokensDto>> Login([FromBody] LoginDto dto)
+    public async Task<Result<AuthTokensDto>> Login([FromBody] LoginDto dto)
     {
         var result = await _mediator.Send(new LoginUserCommand(dto.Email, dto.Password));
-        return this.ToActionResult(result);
+        return result;
     }
 
     [MapToApiVersion("1.0")]
     [HttpPost("register")]
-    public async Task<ActionResult<AuthTokensDto>> Register([FromBody] RegisterDto dto)
+    public async Task<Result<AuthTokensDto>> Register([FromBody] RegisterDto dto)
     {
         var result = await _mediator.Send(
             new RegisterUserCommand(dto.FirstName, dto.LastName, dto.Email, dto.Password));
-        return this.ToActionResult(result);
+        return result;
     }
 }

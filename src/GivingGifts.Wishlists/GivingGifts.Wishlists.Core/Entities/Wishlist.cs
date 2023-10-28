@@ -16,7 +16,7 @@ public class Wishlist : EntityBase<Guid>, IAggregationRoot
         Name = name;
     }
 
-    public string Name { get; } = null!;
+    public string Name { get; private set; } = null!;
     public Guid UserId { get; }
 
     public IEnumerable<Wish> Wishes => _wishes.AsReadOnly();
@@ -31,5 +31,10 @@ public class Wishlist : EntityBase<Guid>, IAggregationRoot
     public void RemoveWish(Wish wish)
     {
         _wishes.Remove(wish);
+    }
+
+    public void Update(string name)
+    {
+        Name = name;
     }
 }
