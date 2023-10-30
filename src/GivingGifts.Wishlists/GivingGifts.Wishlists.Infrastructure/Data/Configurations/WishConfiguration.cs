@@ -1,5 +1,6 @@
 using GivingGifts.SharedKernel.Core.Constants;
-using GivingGifts.Wishlists.Core.Entities;
+using GivingGifts.SharedKernel.Infrastructure;
+using GivingGifts.Wishlists.Core.WishlistAggregate.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,10 +11,7 @@ public class WishConfiguration : IEntityTypeConfiguration<Wish>
     public void Configure(EntityTypeBuilder<Wish> builder)
     {
         builder
-            .ToTable("Wish");
-
-        builder
-            .HasKey(s => s.Id);
+            .ConfigureEntityBase<Wish, Guid>("Wishes");
 
         builder
             .Property(w => w.Name)

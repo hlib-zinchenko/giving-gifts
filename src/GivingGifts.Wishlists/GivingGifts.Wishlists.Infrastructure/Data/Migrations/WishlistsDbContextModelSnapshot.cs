@@ -22,10 +22,9 @@ namespace GivingGifts.Wishlists.Infrastructure.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GivingGifts.Wishlists.Core.Entities.Wish", b =>
+            modelBuilder.Entity("GivingGifts.Wishlists.Core.WishlistAggregate.Entities.Wish", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
@@ -47,13 +46,12 @@ namespace GivingGifts.Wishlists.Infrastructure.Data.Migrations
 
                     b.HasIndex("WishlistId");
 
-                    b.ToTable("Wish", (string)null);
+                    b.ToTable("Wishes", (string)null);
                 });
 
-            modelBuilder.Entity("GivingGifts.Wishlists.Core.Entities.Wishlist", b =>
+            modelBuilder.Entity("GivingGifts.Wishlists.Core.WishlistAggregate.Wishlist", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
@@ -69,14 +67,14 @@ namespace GivingGifts.Wishlists.Infrastructure.Data.Migrations
                     b.ToTable("Wishlists", (string)null);
                 });
 
-            modelBuilder.Entity("GivingGifts.Wishlists.Core.Entities.Wish", b =>
+            modelBuilder.Entity("GivingGifts.Wishlists.Core.WishlistAggregate.Entities.Wish", b =>
                 {
-                    b.HasOne("GivingGifts.Wishlists.Core.Entities.Wishlist", null)
+                    b.HasOne("GivingGifts.Wishlists.Core.WishlistAggregate.Wishlist", null)
                         .WithMany("Wishes")
                         .HasForeignKey("WishlistId");
                 });
 
-            modelBuilder.Entity("GivingGifts.Wishlists.Core.Entities.Wishlist", b =>
+            modelBuilder.Entity("GivingGifts.Wishlists.Core.WishlistAggregate.Wishlist", b =>
                 {
                     b.Navigation("Wishes");
                 });

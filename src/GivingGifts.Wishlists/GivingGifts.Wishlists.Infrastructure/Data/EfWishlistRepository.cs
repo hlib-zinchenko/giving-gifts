@@ -1,5 +1,5 @@
 using GivingGifts.Wishlists.Core;
-using GivingGifts.Wishlists.Core.Entities;
+using GivingGifts.Wishlists.Core.WishlistAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace GivingGifts.Wishlists.Infrastructure.Data;

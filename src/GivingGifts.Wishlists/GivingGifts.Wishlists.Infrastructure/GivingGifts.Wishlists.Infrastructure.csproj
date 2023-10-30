@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\SharedKernel\GivingGifts.SharedKernel.Infrastructure\GivingGifts.SharedKernel.Infrastructure.csproj" />
         <ProjectReference Include="..\GivingGifts.Wishlists.Core\GivingGifts.Wishlists.Core.csproj"/>
     </ItemGroup>
 

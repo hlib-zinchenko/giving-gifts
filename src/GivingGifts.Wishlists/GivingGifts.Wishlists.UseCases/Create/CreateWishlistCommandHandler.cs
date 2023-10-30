@@ -1,7 +1,7 @@
 using Ardalis.Result;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.Wishlists.Core;
-using GivingGifts.Wishlists.Core.Entities;
+using GivingGifts.Wishlists.Core.WishlistAggregate;
 using MediatR;
 
 namespace GivingGifts.Wishlists.UseCases.Create;
@@ -21,7 +21,7 @@ public class CreateWishlistCommandHandler : IRequestHandler<CreateWishlistComman
 
     public async Task<Result<WishlistDto>> Handle(CreateWishlistCommand request, CancellationToken cancellationToken)
     {
-        var wishlist = new Wishlist(_userContext.UserId, request.Name!);
+        var wishlist = new Wishlist(Guid.NewGuid(), _userContext.UserId, request.Name!);
         await _wishlistRepository.AddAsync(wishlist);
         await _wishlistRepository.SaveChangesAsync();
 

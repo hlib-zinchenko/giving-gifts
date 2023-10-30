@@ -25,7 +25,7 @@ namespace GivingGifts.Wishlists.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Wish",
+                name: "Wishes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -36,17 +36,17 @@ namespace GivingGifts.Wishlists.Infrastructure.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Wish", x => x.Id);
+                    table.PrimaryKey("PK_Wishes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Wish_Wishlists_WishlistId",
+                        name: "FK_Wishes_Wishlists_WishlistId",
                         column: x => x.WishlistId,
                         principalTable: "Wishlists",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wish_WishlistId",
-                table: "Wish",
+                name: "IX_Wishes_WishlistId",
+                table: "Wishes",
                 column: "WishlistId");
         }
 
@@ -54,7 +54,7 @@ namespace GivingGifts.Wishlists.Infrastructure.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Wish");
+                name: "Wishes");
 
             migrationBuilder.DropTable(
                 name: "Wishlists");
