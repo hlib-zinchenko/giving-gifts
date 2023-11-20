@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GivingGifts.Wishlists.Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(WishlistsDbContext))]
+    [DbContext(typeof(WishlistsDbContextEf))]
     partial class WishlistsDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -6,37 +6,31 @@ namespace GivingGifts.Wishlists.Infrastructure.Data;
 
 public class EfWishlistRepository : IWishlistRepository
 {
-    private readonly WishlistsDbContext _dbContext;
+    private readonly WishlistsDbContextEf _dbContextEf;
 
-    public EfWishlistRepository(WishlistsDbContext dbContext)
+    public EfWishlistRepository(WishlistsDbContextEf dbContextEf)
     {
-        _dbContext = dbContext;
+        _dbContextEf = dbContextEf;
     }
 
     public async Task SaveChangesAsync()
     {
-        await _dbContext.SaveChangesAsync();
+        await _dbContextEf.SaveChangesAsync();
     }
 
     public Task<Wishlist?> GetAsync(Guid id)
     {
-        return _dbContext.Wishlists.Include(w => w.Wishes)
+        return _dbContextEf.Wishlists.Include(w => w.Wishes)
             .FirstOrDefaultAsync(w => w.Id == id);
-    }
-
-    public async Task<IEnumerable<Wishlist>> GetByUserAsync(Guid userId)
-    {
-        return await _dbContext.Wishlists.Where(w => w.UserId == userId)
-            .ToListAsync();
     }
 
     public async Task AddAsync(Wishlist wishlist)
     {
-        await _dbContext.Wishlists.AddAsync(wishlist);
+        await _dbContextEf.Wishlists.AddAsync(wishlist);
     }
 
     void IWishlistRepository.Delete(Wishlist wishlist)
     {
-        _dbContext.Wishlists.Remove(wishlist);
+        _dbContextEf.Wishlists.Remove(wishlist);
     }
 }

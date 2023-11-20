@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GivingGifts.Wishlists.Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(WishlistsDbContext))]
+    [DbContext(typeof(WishlistsDbContextEf))]
     [Migration("20231030184219_InitMigration")]
     partial class InitMigration
     {

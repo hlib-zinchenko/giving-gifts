@@ -1,29 +1,27 @@
 using Ardalis.Result;
 using GivingGifts.SharedKernel.Core;
-using GivingGifts.Wishlists.Core;
 using MediatR;
 
-namespace GivingGifts.Wishlists.UseCases.GetList;
+namespace GivingGifts.Wishlists.UseCases.GetUserWishlists;
 
 public class UserWishlistsQueryHandler : IRequestHandler<UserWishlistsQuery, Result<IEnumerable<WishlistDto>>>
 {
+    private readonly IUserWishlistsQueryService _userWishlistsQueryService;
     private readonly IUserContext _userContext;
-    private readonly IWishlistRepository _wishlistRepository;
 
     public UserWishlistsQueryHandler(
-        IWishlistRepository wishlistRepository,
+        IUserWishlistsQueryService userWishlistsQueryService,
         IUserContext userContext)
     {
-        _wishlistRepository = wishlistRepository;
+        _userWishlistsQueryService = userWishlistsQueryService;
         _userContext = userContext;
     }
 
     public async Task<Result<IEnumerable<WishlistDto>>> Handle(UserWishlistsQuery request,
         CancellationToken cancellationToken)
     {
-        var userId = _userContext.UserId;
-        var wishlists = await _wishlistRepository.GetByUserAsync(userId);
-        return Result<IEnumerable<WishlistDto>>.Success(
-            wishlists.Select(w => new WishlistDto(w.Id, w.Name)));
+        var result = await _userWishlistsQueryService
+            .UserWishlistsAsync(_userContext.UserId);
+        return Result<IEnumerable<WishlistDto>>.Success(result);
     }
 }

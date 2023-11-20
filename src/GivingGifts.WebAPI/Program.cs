@@ -14,7 +14,7 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         await scope.EnsureDbCreatedAndMigrated<UsersDbContext>();
-        await scope.EnsureDbCreatedAndMigrated<WishlistsDbContext>();
+        await scope.EnsureDbCreatedAndMigrated<WishlistsDbContextEf>();
     }
 }
 

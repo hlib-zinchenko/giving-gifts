@@ -4,7 +4,7 @@ using GivingGifts.Wishlists.Core;
 using GivingGifts.Wishlists.Core.WishlistAggregate;
 using MediatR;
 
-namespace GivingGifts.Wishlists.UseCases.Create;
+namespace GivingGifts.Wishlists.UseCases.CreateWishlist;
 
 public class CreateWishlistCommandHandler : IRequestHandler<CreateWishlistCommand, Result<WishlistDto>>
 {

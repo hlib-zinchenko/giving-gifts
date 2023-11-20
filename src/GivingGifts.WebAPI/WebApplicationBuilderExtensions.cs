@@ -17,6 +17,7 @@ using GivingGifts.Wishlists.Infrastructure;
 using GivingGifts.Wishlists.UseCases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 namespace GivingGifts.WebAPI;
@@ -45,7 +46,33 @@ public static class WebApplicationBuilderExtensions
             );
         });
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(opt =>
+        {
+            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer"
+            });
+
+            opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+        });
 
         services.AddAuthorization();
         services
@@ -87,7 +114,7 @@ public static class WebApplicationBuilderExtensions
         services.AddApiVersioning(
                 options =>
                 {
-                    options.DefaultApiVersion = new ApiVersion(1.0);
+                    options.DefaultApiVersion = new ApiVersion(2.0);
                     options.AssumeDefaultVersionWhenUnspecified = true;
                     // reporting api versions will return the headers
                     // "api-supported-versions" and "api-deprecated-versions"
@@ -130,8 +157,8 @@ public static class WebApplicationBuilderExtensions
                 foreach (var description in provider.ApiVersionDescriptions)
                 {
                     options.SwaggerEndpoint(
-                        $"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant()); 
-                } 
+                        $"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                }
             });
         }
 

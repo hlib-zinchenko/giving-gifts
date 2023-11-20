@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GivingGifts.Wishlists.Infrastructure.Data;
 
-public class WishlistsDbContext : DbContext
+public class WishlistsDbContextEf : DbContext
 {
-    public WishlistsDbContext(DbContextOptions<WishlistsDbContext> dbContextOptions)
+    public WishlistsDbContextEf(DbContextOptions<WishlistsDbContextEf> dbContextOptions)
         : base(dbContextOptions)
     {
     }

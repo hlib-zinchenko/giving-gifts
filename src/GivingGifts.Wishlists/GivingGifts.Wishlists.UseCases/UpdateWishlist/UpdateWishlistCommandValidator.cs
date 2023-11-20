@@ -1,8 +1,7 @@
 using FluentValidation;
 using GivingGifts.SharedKernel.Core.Constants;
-using GivingGifts.Wishlists.UseCases.Create;
 
-namespace GivingGifts.Wishlists.UseCases.Update;
+namespace GivingGifts.Wishlists.UseCases.UpdateWishlist;
 
 public class UpdateWishlistCommandValidator : AbstractValidator<UpdateWishlistCommand>
 {

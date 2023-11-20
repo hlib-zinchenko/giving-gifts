@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace GivingGifts.Wishlists.UseCases.Delete;
+namespace GivingGifts.Wishlists.UseCases.DeleteWishlist;
 
 public class DeleteWishlistCommandValidator : AbstractValidator<DeleteWishlistCommand>
 {

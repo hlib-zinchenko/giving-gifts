@@ -3,14 +3,14 @@ using GivingGifts.SharedKernel.Core;
 using GivingGifts.Wishlists.Core;
 using MediatR;
 
-namespace GivingGifts.Wishlists.UseCases.Update;
+namespace GivingGifts.Wishlists.UseCases.DeleteWishlist;
 
-public class UpdateWishlistCommandHandler : IRequestHandler<UpdateWishlistCommand, Result>
+public class DeleteWishlistCommandHandler : IRequestHandler<DeleteWishlistCommand, Result>
 {
-    private readonly IWishlistRepository _wishlistRepository;
     private readonly IUserContext _userContext;
+    private readonly IWishlistRepository _wishlistRepository;
 
-    public UpdateWishlistCommandHandler(
+    public DeleteWishlistCommandHandler(
         IWishlistRepository wishlistRepository,
         IUserContext userContext)
     {
@@ -18,14 +18,13 @@ public class UpdateWishlistCommandHandler : IRequestHandler<UpdateWishlistComman
         _userContext = userContext;
     }
 
-    public async Task<Result> Handle(UpdateWishlistCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteWishlistCommand request, CancellationToken cancellationToken)
     {
         var wishlist = await _wishlistRepository.GetAsync(request.WishlistId);
         if (wishlist == null || wishlist.UserId != _userContext.UserId) return Result.NotFound();
 
-        wishlist.Update(request.Name!);
+        _wishlistRepository.Delete(wishlist);
         await _wishlistRepository.SaveChangesAsync();
-
         return Result.Success();
     }
 }

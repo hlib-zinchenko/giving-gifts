@@ -1,5 +1,11 @@
+using GivingGifts.SharedKernel.Core.Extensions;
 using GivingGifts.Wishlists.Core;
 using GivingGifts.Wishlists.Infrastructure.Data;
+using GivingGifts.Wishlists.Infrastructure.Data.Queries;
+using GivingGifts.Wishlists.UseCases.GetUserWishlists;
+using GivingGifts.Wishlists.UseCases.GetWish;
+using GivingGifts.Wishlists.UseCases.GetWishes;
+using GivingGifts.Wishlists.UseCases.GetWishlist;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +18,17 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<WishlistsDbContext>(options => options
+        services.AddDbContext<WishlistsDbContextEf>(options => options
             .UseNpgsql(configuration["ConnectionStrings:Wishlists"]));
         services.AddScoped<IWishlistRepository, EfWishlistRepository>();
+        services.AddValidatableOptions<ConnectionStringsOptions>("ConnectionStrings");
+        services.AddScoped<WishlistsDbContextDapper>();
+
+        services.AddScoped<IUserWishlistsQueryService, UserWishlistsQueryService>();
+        services.AddScoped<IWishlistQueryService, WishlistQueryService>();
+        services.AddScoped<IWishQueryService, WishQueryService>();
+        services.AddScoped<IWishesQueryService, WishesQueryService>();
+        
         return services;
     }
 }
