@@ -1,25 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>GivingGifts.Wishlists.UseCases</RootNamespace>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Ardalis.Result" Version="7.1.0"/>
-        <PackageReference Include="FluentValidation" Version="11.8.0" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
-        <PackageReference Include="MediatR" Version="12.1.1"/>
+        <PackageReference Include="Ardalis.Result" Version="7.2.0" />
+        <PackageReference Include="FluentValidation" Version="11.8.1" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.1" />
+        <PackageReference Include="MediatR" Version="12.2.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\GivingGifts.Wishlists.Core\GivingGifts.Wishlists.Core.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="UpdateWish\" />
     </ItemGroup>
 
 </Project>

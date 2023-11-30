@@ -28,7 +28,7 @@ public class CreateWishCommandHandler : IRequestHandler<CreateWishCommand, Resul
             return Result<WishDto>.NotFound();
         }
 
-        var wish = new Wish(Guid.NewGuid(), request.Name, request.Url);
+        var wish = new Wish(Guid.NewGuid(), request.Name!, request.Url, request.Notes);
         wishlist.AddWish(wish);
 
         await _wishlistRepository.SaveChangesAsync();

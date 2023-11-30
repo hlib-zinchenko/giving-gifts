@@ -40,6 +40,7 @@ public class Wishlist : EntityBase<Guid>, IAggregationRoot
 
     public void Update(string name)
     {
-        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Guard.Against.NullOrEmpty(name, nameof(name));
+        Name = name;
     }
 }

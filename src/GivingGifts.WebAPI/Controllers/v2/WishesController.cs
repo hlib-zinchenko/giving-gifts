@@ -7,6 +7,7 @@ using GivingGifts.Wishlists.UseCases.CreateWish;
 using GivingGifts.Wishlists.UseCases.DeleteWish;
 using GivingGifts.Wishlists.UseCases.GetWish;
 using GivingGifts.Wishlists.UseCases.GetWishes;
+using GivingGifts.Wishlists.UseCases.UpdateWish;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +51,7 @@ public class WishesController : ControllerBase
         Guid wishlistId)
     {
         var result = await _mediator.Send(new CreateWishCommand(
-            wishlistId, request.Name!, request.Url));
+            wishlistId, request.Name!, request.Url, request.Notes));
         return result;
     }
 
@@ -58,6 +59,17 @@ public class WishesController : ControllerBase
     public async Task<Result> Delete(Guid wishlistId, Guid wishId)
     {
         var result = await _mediator.Send(new DeleteWishCommand(wishlistId, wishId));
+        return result;
+    }
+
+    [HttpPut("{wishId:guid}")]
+    public async Task<Result<WishDto>> Update(
+        [FromBody] UpdateWishDto request,
+        Guid wishlistId,
+        Guid wishId)
+    {
+        var result = await _mediator.Send(new UpdateWishCommand(
+            wishlistId, wishId, request.Name!, request.Url, request.Notes));
         return result;
     }
 }

@@ -9,20 +9,21 @@ public class Wish : EntityBase<Guid>
     {
     }
 
-    public Wish(Guid id, string name, string? url)
+    public Wish(Guid id, string name, string? url, string? notes)
     {
         Guard.Against.Default(id, nameof(id));
         Guard.Against.NullOrEmpty(name, nameof(name));
         Id = id;
         Name = name;
         Url = url;
+        Notes = notes;
     }
 
     public string Name { get; private set; } = null!;
     public string? Url { get; private set; }
     public string? Notes { get; private set; }
 
-    public void UpdateWish(string name, string? url, string? notes)
+    public void Update(string name, string? url, string? notes)
     {
         Name = name;
         Url = url;
