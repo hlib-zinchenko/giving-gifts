@@ -2,7 +2,7 @@ using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
 using GivingGifts.Wishlists.API.DTO;
-using GivingGifts.Wishlists.UseCases;
+using GivingGifts.Wishlists.API.DTO.Mappers;
 using GivingGifts.Wishlists.UseCases.CreateWish;
 using GivingGifts.Wishlists.UseCases.DeleteWish;
 using GivingGifts.Wishlists.UseCases.GetWish;
@@ -11,6 +11,7 @@ using GivingGifts.Wishlists.UseCases.UpdateWish;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WishDto = GivingGifts.Wishlists.API.DTO.WishDto;
 
 namespace GivingGifts.WebAPI.Controllers.v2;
 
@@ -30,10 +31,10 @@ public class WishesController : ControllerBase
 
     [HttpGet]
     [HttpHead]
-    public async Task<Result<IEnumerable<WishDto>>> Get(Guid wishlistId)
+    public async Task<Result<WishDto[]>> Get(Guid wishlistId)
     {
         var result = await _mediator.Send(new WishesQuery(wishlistId));
-        return result;
+        return result.Map(WishDtoMapper.ToApiDto);
     }
 
     [Route("{wishId:guid}")]
@@ -42,7 +43,7 @@ public class WishesController : ControllerBase
     public async Task<Result<WishDto>> Get(Guid wishId, Guid wishlistId)
     {
         var result = await _mediator.Send(new WishQuery(wishId, wishlistId));
-        return result;
+        return result.Map(WishDtoMapper.ToApiDto);
     }
 
     [HttpPost]
@@ -52,7 +53,7 @@ public class WishesController : ControllerBase
     {
         var result = await _mediator.Send(new CreateWishCommand(
             wishlistId, request.Name!, request.Url, request.Notes));
-        return result;
+        return result.Map(WishDtoMapper.ToApiDto);
     }
 
     [HttpDelete("{wishId:guid}")]

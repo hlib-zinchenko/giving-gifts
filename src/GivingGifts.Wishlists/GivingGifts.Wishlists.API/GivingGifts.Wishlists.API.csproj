@@ -7,4 +7,9 @@
         <LangVersion>12</LangVersion>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\GivingGifts.Wishlists.Core\GivingGifts.Wishlists.Core.csproj" />
+      <ProjectReference Include="..\GivingGifts.Wishlists.UseCases\GivingGifts.Wishlists.UseCases.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -44,7 +44,8 @@ public static class WebApplicationBuilderExtensions
                 .For(ResultStatus.Error, HttpStatusCode.InternalServerError)
                 .For(ResultStatus.Invalid, HttpStatusCode.UnprocessableEntity)
             );
-        });
+        }).AddXmlSerializerFormatters();
+
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(opt =>
         {

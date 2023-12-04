@@ -1,4 +1,3 @@
-using Dapper;
 using GivingGifts.Wishlists.UseCases;
 using GivingGifts.Wishlists.UseCases.GetWishlist;
 using Microsoft.EntityFrameworkCore;
