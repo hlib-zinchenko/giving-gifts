@@ -1,6 +1,6 @@
-namespace GivingGifts.Wishlists.API.DTO;
+namespace GivingGifts.Wishlists.API.DTO.V2;
 
-public class CreateWishDto
+public class UpdateWishDto
 {
     public string? Name { get; set; }
     public string? Url { get; set; }

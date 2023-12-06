@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{34CFA59D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GivingGifts.Wishlists.UnitTests", "src\GivingGifts.Wishlists\tests\GivingGifts.Wishlists.UnitTests\GivingGifts.Wishlists.UnitTests.csproj", "{A82933CF-3382-408E-94EC-93E15E91552E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GivingGifts.SharedKernel.API", "src\SharedKernel\GivingGifts.SharedKernel.API\GivingGifts.SharedKernel.API.csproj", "{EF5EBD14-BB6D-47A7-B52D-55AC39645B64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{A82933CF-3382-408E-94EC-93E15E91552E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A82933CF-3382-408E-94EC-93E15E91552E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A82933CF-3382-408E-94EC-93E15E91552E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF5EBD14-BB6D-47A7-B52D-55AC39645B64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF5EBD14-BB6D-47A7-B52D-55AC39645B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF5EBD14-BB6D-47A7-B52D-55AC39645B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF5EBD14-BB6D-47A7-B52D-55AC39645B64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C06EE6E5-3B15-423D-865E-243CF309A236} = {097B9C93-2D1A-493E-97B2-4E80CD3BAB14}
@@ -113,5 +119,6 @@ Global
 		{C67FD982-4B36-45FB-BC81-34941BA08FBD} = {626BF21B-BB0E-4390-8EBA-C7DA04E7F4A3}
 		{34CFA59D-CC79-47B8-A294-17A8B593D556} = {B45ED73A-0C17-416B-B74E-4D860EB144F4}
 		{A82933CF-3382-408E-94EC-93E15E91552E} = {34CFA59D-CC79-47B8-A294-17A8B593D556}
+		{EF5EBD14-BB6D-47A7-B52D-55AC39645B64} = {F7546FC7-5758-4E6A-8186-372933B10B38}
 	EndGlobalSection
 EndGlobal

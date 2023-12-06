@@ -1,4 +1,4 @@
-namespace GivingGifts.Wishlists.API.DTO;
+namespace GivingGifts.Wishlists.API.DTO.V2;
 
 public class UpdateWishlistDto
 {

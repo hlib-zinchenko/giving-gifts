@@ -24,7 +24,7 @@ public class WishlistUpdate
     [Fact]
     public void ThrowExceptionWhenNullNamePassed()
     {
-        var aciton = () => { _sut.Update(null); };
+        var aciton = () => { _sut.Update(null!); };
         Assert.Throws<ArgumentNullException>(aciton);
     }
 }

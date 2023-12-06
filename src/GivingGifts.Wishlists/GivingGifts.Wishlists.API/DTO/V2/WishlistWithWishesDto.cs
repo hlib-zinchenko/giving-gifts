@@ -1,8 +1,7 @@
-namespace GivingGifts.Wishlists.API.DTO;
+namespace GivingGifts.Wishlists.API.DTO.V2;
 
 public class WishlistWithWishesDto
 {
-    public Guid UserId { get; init; }
     public Guid Id { get; init; }
     public string Name { get; init; } = null!;
     public WishDto[] Wishes { get; init; } = [];

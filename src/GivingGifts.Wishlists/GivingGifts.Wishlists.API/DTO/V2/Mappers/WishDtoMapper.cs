@@ -1,4 +1,4 @@
-namespace GivingGifts.Wishlists.API.DTO.Mappers;
+namespace GivingGifts.Wishlists.API.DTO.V2.Mappers;
 
 public static class WishDtoMapper
 {

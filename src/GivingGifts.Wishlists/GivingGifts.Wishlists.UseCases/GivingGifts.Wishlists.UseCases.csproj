@@ -19,4 +19,8 @@
         <ProjectReference Include="..\GivingGifts.Wishlists.Core\GivingGifts.Wishlists.Core.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="V1\" />
+    </ItemGroup>
+
 </Project>

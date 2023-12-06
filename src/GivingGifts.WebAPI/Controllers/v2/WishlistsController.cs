@@ -1,8 +1,9 @@
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
-using GivingGifts.Wishlists.API.DTO;
-using GivingGifts.Wishlists.API.DTO.Mappers;
+using GivingGifts.SharedKernel.API.Extensions.Result;
+using GivingGifts.Wishlists.API.DTO.V2;
+using GivingGifts.Wishlists.API.DTO.V2.Mappers;
 using GivingGifts.Wishlists.UseCases.CreateWishlist;
 using GivingGifts.Wishlists.UseCases.DeleteWishlist;
 using GivingGifts.Wishlists.UseCases.GetUserWishlists;
@@ -11,8 +12,8 @@ using GivingGifts.Wishlists.UseCases.UpdateWishlist;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WishlistDto = GivingGifts.Wishlists.API.DTO.WishlistDto;
-using WishlistWithWishesDto = GivingGifts.Wishlists.API.DTO.WishlistWithWishesDto;
+using WishlistDto = GivingGifts.Wishlists.API.DTO.V2.WishlistDto;
+using WishlistWithWishesDto = GivingGifts.Wishlists.API.DTO.V2.WishlistWithWishesDto;
 
 namespace GivingGifts.WebAPI.Controllers.v2;
 
@@ -37,21 +38,26 @@ public class WishlistsController : ControllerBase
         var result = await _mediator.Send(new UserWishlistsQuery());
         return result.Map(WishlistDtoMapper.ToApiDto);
     }
-    
-    [Route("{wishlistId:guid}")]
+
+    [Route("{wishlistId:guid}", Name = "GetWishlist")]
     [HttpGet]
     [HttpHead]
-    public async Task<Result<WishlistWithWishesDto>> Get(Guid wishListId)
+    public async Task<Result<WishlistWithWishesDto>> Get([FromRoute] Guid wishListId)
     {
         var result = await _mediator.Send(new WishlistQuery(wishListId));
         return result.Map(WishlistWithWishesDtoMapper.ToApiDto);
     }
 
     [HttpPost]
-    public async Task<Result<WishlistDto>> Create([FromBody] CreateWishlistDto request)
+    public async Task<ActionResult<WishlistDto>> Create([FromBody] CreateWishlistDto request)
     {
-        var result = await _mediator.Send(new CreateWishlistCommand(request.Name));
-        return result.Map(WishlistDtoMapper.ToApiDto);
+        var result = await _mediator.Send(new CreateWishlistCommand(
+            request.Name,
+            CreateWishDtoMapper.ToCommandDto(request.Wishes)));
+        return result.Map(WishlistDtoMapper.ToApiDto).ToCreatedAtRouteActionResult(
+            this,
+            "GetWishlist",
+            new { wishListId = result.Value.Id });
     }
 
     [HttpDelete("{wishlistId:guid}")]

@@ -1,4 +1,4 @@
-namespace GivingGifts.Wishlists.API.DTO.Mappers;
+namespace GivingGifts.Wishlists.API.DTO.V2.Mappers;
 
 public static class WishlistWithWishesDtoMapper
 {
@@ -8,7 +8,6 @@ public static class WishlistWithWishesDtoMapper
         {
             Id = input.Id,
             Name = input.Name,
-            UserId = input.UserId,
             Wishes = WishDtoMapper.ToApiDto(input.Wishes).ToArray(),
         };
     }

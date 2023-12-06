@@ -1,16 +1,16 @@
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
-using GivingGifts.Wishlists.API.DTO;
-using GivingGifts.Wishlists.API.DTO.Mappers;
-using GivingGifts.Wishlists.UseCases.CreateWishlist;
+using GivingGifts.Wishlists.API.DTO.V1;
+using GivingGifts.Wishlists.API.DTO.V1.Mappers;
 using GivingGifts.Wishlists.UseCases.DeleteWishlist;
 using GivingGifts.Wishlists.UseCases.GetUserWishlists;
 using GivingGifts.Wishlists.UseCases.UpdateWishlist;
+using GivingGifts.Wishlists.UseCases.V1.CreateWishlist;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WishlistDto = GivingGifts.Wishlists.API.DTO.WishlistDto;
+using WishlistDto = GivingGifts.Wishlists.API.DTO.V1.WishlistDto;
 
 namespace GivingGifts.WebAPI.Controllers.v1;
 

@@ -1,4 +1,4 @@
-namespace GivingGifts.Wishlists.API.DTO;
+namespace GivingGifts.Wishlists.API.DTO.V1;
 
 public class WishlistDto
 {
