@@ -1,5 +1,6 @@
 using FluentValidation;
 using GivingGifts.SharedKernel.Core.Constants;
+using GivingGifts.Wishlists.Core.DTO.Validators;
 
 namespace GivingGifts.Wishlists.UseCases.CreateWishlist;
 
@@ -13,18 +14,5 @@ public class CreateWishlistCommandValidator : AbstractValidator<CreateWishlistCo
 
         RuleForEach(c => c.Wishes)
             .SetValidator(_ => new CreateWishDtoValidator());
-    }
-
-    private class CreateWishDtoValidator : AbstractValidator<CreateWishDto>
-    {
-        public CreateWishDtoValidator()
-        {
-            RuleFor(c => c.Name)
-                .MaximumLength(PropertyLengthLimitation.Medium)
-                .NotEmpty();
-
-            RuleFor(c => c.Url)
-                .MaximumLength(PropertyLengthLimitation.Giant);
-        }
     }
 }

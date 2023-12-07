@@ -1,6 +1,7 @@
 using Ardalis.Result;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.Wishlists.Core;
+using GivingGifts.Wishlists.Core.DTO;
 using GivingGifts.Wishlists.Core.WishlistAggregate.Entities;
 using MediatR;
 
@@ -33,6 +34,8 @@ public class CreateWishCommandHandler : IRequestHandler<CreateWishCommand, Resul
 
         await _wishlistRepository.SaveChangesAsync();
 
-        return Result<WishDto>.Success(new WishDto(wish.Id, wish.Name, wish.Url));
+        Result<WishDto>.Invalid();
+        Result<WishDto[]>.Invalid();
+        return Result<WishDto>.Success(new WishDto(wish.Id, wish.Name, wish.Url, wish.Notes));
     }
 }

@@ -1,6 +1,7 @@
 using Ardalis.Result;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.Wishlists.Core;
+using GivingGifts.Wishlists.Core.DTO;
 using GivingGifts.Wishlists.Core.WishlistAggregate;
 using MediatR;
 

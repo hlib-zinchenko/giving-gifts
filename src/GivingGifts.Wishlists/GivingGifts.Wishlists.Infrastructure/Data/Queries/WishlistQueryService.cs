@@ -1,4 +1,4 @@
-using GivingGifts.Wishlists.UseCases;
+using GivingGifts.Wishlists.Core.DTO;
 using GivingGifts.Wishlists.UseCases.GetWishlist;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,10 +20,12 @@ public class WishlistQueryService : IWishlistQueryService
             .Include(c => c.Wishes)
             .FirstOrDefaultAsync(c => c.Id == wishlistId);
 
-        return new WishlistWithWishesDto(
-            data.UserId,
-            data.Id,
-            data.Name,
-            data.Wishes.Select(w => new WishDto(w.Id, w.Name, w.Url)).ToArray());
+        return data != null
+            ? new WishlistWithWishesDto(
+                data.UserId,
+                data.Id,
+                data.Name,
+                data.Wishes.Select(w => new WishDto(w.Id, w.Name, w.Url, w.Notes)).ToArray())
+            : null;
     }
 }

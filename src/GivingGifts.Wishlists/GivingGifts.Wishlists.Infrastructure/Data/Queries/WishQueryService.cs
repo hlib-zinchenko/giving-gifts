@@ -1,5 +1,4 @@
 using Dapper;
-using GivingGifts.Wishlists.UseCases;
 using GivingGifts.Wishlists.UseCases.GetWish;
 
 namespace GivingGifts.Wishlists.Infrastructure.Data.Queries;

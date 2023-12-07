@@ -32,6 +32,12 @@ public class Wishlist : EntityBase<Guid>, IAggregationRoot
         Guard.Against.Null(wish, nameof(wish));
         _wishes.Add(wish);
     }
+    
+    public void AddWishes(Wish[] wishes)
+    {
+        Guard.Against.Null(wishes, nameof(wishes));
+        _wishes.AddRange(wishes);
+    }
 
     public void RemoveWish(Wish wish)
     {

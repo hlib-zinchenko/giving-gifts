@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using DependencyInjection = GivingGifts.Wishlists.UseCases.DependencyInjection;
 
 namespace GivingGifts.WebAPI;
 
@@ -85,7 +86,7 @@ public static class WebApplicationBuilderExtensions
             .AddUsersUseCases();
 
         services.AddMediatR(
-            Assembly.GetAssembly(typeof(Wishlists.UseCases.DependencyInjection))!,
+            Assembly.GetAssembly(typeof(DependencyInjection))!,
             Assembly.GetAssembly(typeof(Users.UseCases.DependencyInjection))!);
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

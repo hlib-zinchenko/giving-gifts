@@ -3,6 +3,7 @@ using System.Text;
 using Ardalis.Result;
 using Microsoft.AspNetCore.Mvc;
 
+# nullable disable
 namespace GivingGifts.SharedKernel.API.Extensions.Result
 {
     /// <summary>
@@ -173,7 +174,7 @@ namespace GivingGifts.SharedKernel.API.Extensions.Result
 
     public class ResultStatusOptions
     {
-        private readonly Dictionary<string, HttpStatusCode> _methodToStatusMap = new Dictionary<string, HttpStatusCode>();
+        private readonly Dictionary<string, HttpStatusCode> _methodToStatusMap = new();
         private readonly HttpStatusCode _defaultStatusCode;
 
         internal ResultStatusOptions(ResultStatus status, HttpStatusCode defaultStatusCode)
@@ -248,3 +249,4 @@ namespace GivingGifts.SharedKernel.API.Extensions.Result
         }
     }
 }
+#nullable enable

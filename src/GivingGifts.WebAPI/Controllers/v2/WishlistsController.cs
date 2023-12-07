@@ -57,7 +57,7 @@ public class WishlistsController : ControllerBase
         return result.Map(WishlistDtoMapper.ToApiDto).ToCreatedAtRouteActionResult(
             this,
             "GetWishlist",
-            new { wishListId = result.Value.Id });
+            new { wishListId = result.Value?.Id });
     }
 
     [HttpDelete("{wishlistId:guid}")]

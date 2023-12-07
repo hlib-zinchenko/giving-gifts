@@ -2,7 +2,7 @@ namespace GivingGifts.Wishlists.API.DTO.V1.Mappers;
 
 public static class WishlistDtoMapper
 {
-    public static WishlistDto ToApiDto(GivingGifts.Wishlists.UseCases.WishlistDto input)
+    public static WishlistDto ToApiDto(Core.DTO.WishlistDto input)
     {
         return new WishlistDto
         {
@@ -11,7 +11,7 @@ public static class WishlistDtoMapper
         };
     }
 
-    public static WishlistDto[] ToApiDto(IEnumerable<GivingGifts.Wishlists.UseCases.WishlistDto> input)
+    public static WishlistDto[] ToApiDto(IEnumerable<Core.DTO.WishlistDto> input)
     {
         return input.Select(ToApiDto).ToArray();
     }

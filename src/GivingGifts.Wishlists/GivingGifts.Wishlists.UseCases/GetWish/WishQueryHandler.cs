@@ -1,5 +1,6 @@
 using Ardalis.Result;
 using GivingGifts.SharedKernel.Core;
+using GivingGifts.Wishlists.Core.DTO;
 using MediatR;
 
 namespace GivingGifts.Wishlists.UseCases.GetWish;
@@ -28,6 +29,6 @@ public class WishQueryHandler : IRequestHandler<WishQuery, Result<WishDto>>
             return Result<WishDto>.NotFound();
         }
 
-        return Result<WishDto>.Success(new WishDto(wish.Id, wish.Name, wish.Url));
+        return Result<WishDto>.Success(new WishDto(wish.Id, wish.Name, wish.Url, wish.Notes));
     }
 }

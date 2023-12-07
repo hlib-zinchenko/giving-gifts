@@ -2,21 +2,19 @@ using FluentValidation;
 using GivingGifts.SharedKernel.Core.Constants;
 using GivingGifts.SharedKernel.Core.Extensions;
 
-namespace GivingGifts.Wishlists.UseCases.CreateWish;
+namespace GivingGifts.Wishlists.Core.DTO.Validators;
 
-public class CreateWishCommandValidator : AbstractValidator<CreateWishCommand>
+public class CreateWishDtoValidator : AbstractValidator<CreateWishDto>
 {
-    public CreateWishCommandValidator()
+    public CreateWishDtoValidator()
     {
         RuleFor(c => c.Name)
             .MaximumLength(PropertyLengthLimitation.Medium)
             .NotEmpty();
 
-        RuleFor(c => c.WishlistId)
-            .NotEmpty();
-
         RuleFor(c => c.Url)
             .ValidUrl()
+            .EmailAddress()
             .MaximumLength(PropertyLengthLimitation.Giant);
     }
 }

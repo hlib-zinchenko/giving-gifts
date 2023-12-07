@@ -30,13 +30,11 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
             _validators.Select(v => v.ValidateAsync(context, cancellationToken)));
         var invalidValidationResults = validationResults
             .Where(r => !r.IsValid).ToArray();
-        if (!invalidValidationResults.Any())
+        if (invalidValidationResults.Length == 0)
         {
             return await next();
         }
 
-        var errors = invalidValidationResults
-            .SelectMany(r => r.AsErrors()).ToList();
         var responseType = typeof(TResponse);
         if ((responseType.IsGenericType && responseType.GetGenericTypeDefinition() != typeof(Result<>)) &&
             responseType != typeof(Result))
@@ -45,9 +43,24 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
                 .SelectMany(vr => vr.Errors));
         }
 
-        var errorResult = responseType
-            .GetMethod("Invalid", BindingFlags.Public | BindingFlags.Static)!
-            .Invoke(null, new object[] { errors });
+        var errors = invalidValidationResults
+            .SelectMany(r => r.AsErrors()).ToArray();
+        var errorsType = errors.GetType();
+
+        // Find the "Invalid" method on the Result type
+        var invalidMethod = responseType.GetMethods(
+            BindingFlags.Public | BindingFlags.Static)
+            .Where(m => m.Name == "Invalid"
+                        && m.GetParameters().Length == 1
+                        && m.GetParameters()[0].ParameterType == errorsType)
+            .ToArray();
+
+        if (invalidMethod == null)
+        {
+            throw new InvalidOperationException("Invalid method not found on the Result type.");
+        }
+
+        var errorResult = invalidMethod[0].Invoke(null, new object[] { errors });
         return (TResponse)errorResult!;
     }
 }

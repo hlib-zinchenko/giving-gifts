@@ -11,9 +11,11 @@ public class WishlistAddWish
     [Fact]
     public void AddSuccess()
     {
-        var testWishId = new Guid("75EBDE04-E9A0-4E49-9722-3CEF5327EAFA");
-        var testWishName = "NewWish";
-        var wish = new Wish(testWishId, testWishName, null, null);
+        var wish = new Wish(
+            new Guid("75EBDE04-E9A0-4E49-9722-3CEF5327EAFA"),
+            "NewWish",
+            null,
+            null);
 
         _sut.AddWish(wish);
 

@@ -32,13 +32,13 @@ public class WishesController : ControllerBase
 
     [HttpGet]
     [HttpHead]
-    public async Task<Result<WishDto[]>> Get(Guid wishlistId)
+    public async Task<Result<WishDto[]>> GetList(Guid wishlistId)
     {
         var result = await _mediator.Send(new WishesQuery(wishlistId));
         return result.Map(WishDtoMapper.ToApiDto);
     }
 
-    [Route("{wishId:guid}")]
+    [Route("{wishId:guid}", Name = "GetWish")]
     [HttpGet]
     [HttpHead]
     public async Task<Result<WishDto>> Get(Guid wishId, Guid wishlistId)
@@ -56,8 +56,8 @@ public class WishesController : ControllerBase
             wishlistId, request.Name!, request.Url, request.Notes));
         return result.Map(WishDtoMapper.ToApiDto).ToCreatedAtRouteActionResult(
             this,
-            "GetWishlist",
-            new { wishListId = result.Value.Id });
+            "GetWish",
+            new { wishlistId, wishId = result.Value?.Id });
     }
 
     [HttpDelete("{wishId:guid}")]
