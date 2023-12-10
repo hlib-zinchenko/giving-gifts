@@ -1,6 +1,7 @@
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
+using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.Users.API.DTO;
 using GivingGifts.Users.API.DTO.Mappers;
 using GivingGifts.Users.UseCases.Login;
@@ -22,6 +23,12 @@ public class AuthController : ControllerBase
     public AuthController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpOptions]
+    public ActionResult Options()
+    {
+        return this.OptionsActionResult("POST");
     }
 
     [HttpPost("login")]

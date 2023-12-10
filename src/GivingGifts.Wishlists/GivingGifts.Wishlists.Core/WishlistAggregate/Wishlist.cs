@@ -1,6 +1,7 @@
 using Ardalis.GuardClauses;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.Wishlists.Core.WishlistAggregate.Entities;
+using GivingGifts.Wishlists.Core.WishlistAggregate.Events;
 
 namespace GivingGifts.Wishlists.Core.WishlistAggregate;
 
@@ -32,7 +33,7 @@ public class Wishlist : EntityBase<Guid>, IAggregationRoot
         Guard.Against.Null(wish, nameof(wish));
         _wishes.Add(wish);
     }
-    
+
     public void AddWishes(Wish[] wishes)
     {
         Guard.Against.Null(wishes, nameof(wishes));
@@ -44,9 +45,13 @@ public class Wishlist : EntityBase<Guid>, IAggregationRoot
         _wishes.Remove(wish);
     }
 
-    public void Update(string name)
+    public void Update(
+        string name,
+        IDateTimeProvider dateTimeProvider)
     {
         Guard.Against.NullOrEmpty(name, nameof(name));
         Name = name;
+
+        _events.Add(new WishlistUpdatedEvent(dateTimeProvider, Id));
     }
 }

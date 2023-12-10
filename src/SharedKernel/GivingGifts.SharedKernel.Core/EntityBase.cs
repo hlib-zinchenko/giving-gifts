@@ -8,4 +8,8 @@ public abstract class EntityBase<T> : IEntity<T>
     public T Id { get; protected set; } = default!;
 
     [NotMapped] public IReadOnlyCollection<DomainEventBase> Events => _events.AsReadOnly();
+    public void ClearEvents()
+    {
+        _events.Clear();
+    }
 }

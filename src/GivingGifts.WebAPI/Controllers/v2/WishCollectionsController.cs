@@ -1,6 +1,7 @@
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
+using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
 using GivingGifts.SharedKernel.API.ModelBinders;
 using GivingGifts.Wishlists.API.DTO.V2.Mappers;
@@ -29,6 +30,7 @@ public class WishCollectionsController : ControllerBase
     }
 
     [HttpGet("{wishIds}", Name = "GetWishCollection")]
+    [HttpHead]
     public async Task<Result<WishDto[]>> Get(
         [FromRoute] Guid wishlistId,
         [ModelBinder(BinderType = typeof(ArrayModelBinder))] [FromRoute]
@@ -57,5 +59,17 @@ public class WishCollectionsController : ControllerBase
             this,
             "GetWishCollection",
             new { wishlistId, wishIds = wishIdsAString });
+    }
+
+    [HttpOptions]
+    public ActionResult Options()
+    {
+        return this.OptionsActionResult("POST");
+    }
+
+    [HttpOptions("{wishIds}")]
+    public ActionResult OptionsConcrete()
+    {
+        return this.OptionsActionResult("GET", "HEAD");
     }
 }

@@ -9,11 +9,22 @@ public static class WishDtoMapper
             Id = input.Id,
             Name = input.Name,
             Url = input.Url,
+            Notes = input.Notes,
         };
     }
 
     public static WishDto[] ToApiDto(IEnumerable<Core.DTO.WishDto> input)
     {
         return input.Select(ToApiDto).ToArray();
+    }
+    
+    public static UpdateWishDto ToUpdateWishDto(Core.DTO.WishDto input)
+    {
+        return new UpdateWishDto
+        {
+            Name = input.Name,
+            Url = input.Url,
+            Notes = input.Notes,
+        };
     }
 }

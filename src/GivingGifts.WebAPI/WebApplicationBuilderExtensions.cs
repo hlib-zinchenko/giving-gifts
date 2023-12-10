@@ -18,8 +18,8 @@ using GivingGifts.Wishlists.UseCases;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using Serilog;
-using DependencyInjection = GivingGifts.Wishlists.UseCases.DependencyInjection;
 
 namespace GivingGifts.WebAPI;
 
@@ -45,7 +45,12 @@ public static class WebApplicationBuilderExtensions
                 .For(ResultStatus.Error, HttpStatusCode.InternalServerError)
                 .For(ResultStatus.Invalid, HttpStatusCode.UnprocessableEntity)
             );
-        }).AddXmlSerializerFormatters();
+        })
+        .AddNewtonsoftJson(setupAction =>
+        {
+            setupAction.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+        })
+        .AddXmlSerializerFormatters();
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(opt =>
@@ -86,8 +91,9 @@ public static class WebApplicationBuilderExtensions
             .AddUsersUseCases();
 
         services.AddMediatR(
-            Assembly.GetAssembly(typeof(DependencyInjection))!,
-            Assembly.GetAssembly(typeof(Users.UseCases.DependencyInjection))!);
+            Assembly.GetAssembly(typeof(Users.UseCases.DependencyInjection))!,
+            Assembly.GetAssembly(typeof(Wishlists.Core.DependencyInjection))!,
+            Assembly.GetAssembly(typeof(Wishlists.UseCases.DependencyInjection))!);
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

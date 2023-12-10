@@ -15,7 +15,7 @@ public class WishQueryService : IWishQueryService
     public async Task<UserWishDto?> GetUserWish(Guid wishId)
     {
         const string query = """
-                             SELECT WL."UserId", W."WishlistId", W."Id", W."Name", W."Url"
+                             SELECT WL."UserId", W."WishlistId", W."Id", W."Name", W."Url", W."Notes"
                              FROM "Wishes" as W
                              JOIN "Wishlists" as WL ON W."WishlistId" = WL."Id"
                              WHERE W."Id" = @WishId

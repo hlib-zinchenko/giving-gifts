@@ -1,6 +1,7 @@
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
+using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
 using GivingGifts.Wishlists.API.DTO.V2;
 using GivingGifts.Wishlists.API.DTO.V2.Mappers;
@@ -72,5 +73,17 @@ public class WishlistsController : ControllerBase
     {
         var result = await _mediator.Send(new UpdateWishlistCommand(wishlistId, request.Name));
         return result;
+    }
+
+    [HttpOptions]
+    public ActionResult Options()
+    {
+        return this.OptionsActionResult("GET", "HEAD", "POST");
+    }
+
+    [HttpOptions("{wishlistId:guid}")]
+    public ActionResult OptionsConcrete()
+    {
+        return this.OptionsActionResult("GET", "HEAD", "DELETE", "PUT");
     }
 }

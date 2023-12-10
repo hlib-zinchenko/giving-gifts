@@ -27,4 +27,8 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAggregationRoot
     public string LastName { get; } = null!;
     public List<UserRole> UserRoles { get; } = new();
     [NotMapped] public IReadOnlyCollection<DomainEventBase> Events => _events.AsReadOnly();
+    public void ClearEvents()
+    {
+        _events.Clear();
+    }
 }

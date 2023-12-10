@@ -1,6 +1,8 @@
+using MediatR;
+
 namespace GivingGifts.SharedKernel.Core;
 
-public abstract class DomainEventBase
+public abstract class DomainEventBase : INotification
 {
     protected DomainEventBase(IDateTimeProvider dateTimeProvider)
     {

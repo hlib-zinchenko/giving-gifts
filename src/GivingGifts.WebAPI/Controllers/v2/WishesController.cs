@@ -1,6 +1,7 @@
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
+using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
 using GivingGifts.Wishlists.API.DTO.V2;
 using GivingGifts.Wishlists.API.DTO.V2.Mappers;
@@ -11,6 +12,7 @@ using GivingGifts.Wishlists.UseCases.GetWishes;
 using GivingGifts.Wishlists.UseCases.UpdateWish;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using WishDto = GivingGifts.Wishlists.API.DTO.V2.WishDto;
 
@@ -76,5 +78,36 @@ public class WishesController : ControllerBase
         var result = await _mediator.Send(new UpdateWishCommand(
             wishlistId, wishId, request.Name!, request.Url, request.Notes));
         return result;
+    }
+
+    [HttpPatch("{wishId:guid}")]
+    public async Task<Result<WishDto>> UpdatePartial(
+        [FromBody] JsonPatchDocument<UpdateWishDto> request,
+        Guid wishlistId,
+        Guid wishId)
+    {
+        var wish = await _mediator.Send(new WishQuery(wishId, wishlistId));
+        if (wish.Status != ResultStatus.Ok)
+        {
+            return wish.Map(WishDtoMapper.ToApiDto);
+        }
+
+        var updateWishDto = WishDtoMapper.ToUpdateWishDto(wish.Value);
+        request.ApplyTo(updateWishDto);
+        var result = await _mediator.Send(new UpdateWishCommand(
+            wishlistId, wishId, updateWishDto.Name!, updateWishDto.Url, updateWishDto.Notes));
+        return result;
+    }
+
+    [HttpOptions]
+    public ActionResult Options()
+    {
+        return this.OptionsActionResult("GET", "HEAD", "POST");
+    }
+
+    [HttpOptions("{wishId:guid}")]
+    public ActionResult OptionsConcrete()
+    {
+        return this.OptionsActionResult("GET", "HEAD", "DELETE", "PUT", "PATCH");
     }
 }

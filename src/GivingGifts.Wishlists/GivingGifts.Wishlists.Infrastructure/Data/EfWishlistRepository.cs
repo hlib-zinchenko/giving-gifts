@@ -20,7 +20,9 @@ public class EfWishlistRepository : IWishlistRepository
 
     public Task<Wishlist?> GetAsync(Guid id)
     {
-        return _dbContextEf.Wishlists.Include(w => w.Wishes)
+        return _dbContextEf
+            .Wishlists
+            .Include(w => w.Wishes)
             .FirstOrDefaultAsync(w => w.Id == id);
     }
 

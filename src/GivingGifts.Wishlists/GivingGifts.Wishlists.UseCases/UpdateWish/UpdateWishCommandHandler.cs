@@ -21,7 +21,10 @@ public class UpdateWishCommandHandler : IRequestHandler<UpdateWishCommand, Resul
     public async Task<Result> Handle(UpdateWishCommand request, CancellationToken cancellationToken)
     {
         var wishlist = await _wishlistRepository.GetAsync(request.WishlistId);
-        if (wishlist == null || wishlist.UserId != _userContext.UserId) return Result.NotFound();
+        if (wishlist == null || wishlist.UserId != _userContext.UserId)
+        {
+            return Result.NotFound();
+        }
 
         var wish = wishlist.Wishes.FirstOrDefault(w => w.Id == request.WishId);
 
@@ -31,6 +34,7 @@ public class UpdateWishCommandHandler : IRequestHandler<UpdateWishCommand, Resul
         }
 
         wish.Update(request.Name!, request.Url, request.Notes);
+
         await _wishlistRepository.SaveChangesAsync();
 
         return Result.Success();
