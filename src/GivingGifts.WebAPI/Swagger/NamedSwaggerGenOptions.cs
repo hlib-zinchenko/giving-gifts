@@ -10,7 +10,7 @@ namespace GivingGifts.WebAPI.Swagger
         private readonly IApiVersionDescriptionProvider _provider;
         public NamedSwaggerGenOptions(IApiVersionDescriptionProvider provider)
         {
-            this._provider = provider;
+            _provider = provider;
         }
     
 

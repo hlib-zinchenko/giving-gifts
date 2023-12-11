@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\SharedKernel\GivingGifts.SharedKernel.API\GivingGifts.SharedKernel.API.csproj" />
       <ProjectReference Include="..\GivingGifts.Wishlists.Core\GivingGifts.Wishlists.Core.csproj" />
       <ProjectReference Include="..\GivingGifts.Wishlists.UseCases\GivingGifts.Wishlists.UseCases.csproj" />
     </ItemGroup>

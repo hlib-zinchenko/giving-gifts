@@ -1,6 +1,7 @@
 using FluentValidation;
-using GivingGifts.Wishlists.UseCases.CreateWishes;
 using GivingGifts.Wishlists.Core.DTO.Validators;
+
+namespace GivingGifts.Wishlists.UseCases.CreateWishes;
 
 public class CreateWishesCommandValidator
     : AbstractValidator<CreateWishesCommand>

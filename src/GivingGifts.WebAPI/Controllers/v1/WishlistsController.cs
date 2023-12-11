@@ -1,16 +1,17 @@
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
-using GivingGifts.Wishlists.API.DTO.V1;
-using GivingGifts.Wishlists.API.DTO.V1.Mappers;
+using GivingGifts.SharedKernel.Core.Constants;
+using GivingGifts.Wishlists.API.ApiModels.V1;
+using GivingGifts.Wishlists.API.ApiModels.V1.Mappers;
 using GivingGifts.Wishlists.UseCases.DeleteWishlist;
-using GivingGifts.Wishlists.UseCases.GetUserWishlists;
+using GivingGifts.Wishlists.UseCases.GetWishlists;
 using GivingGifts.Wishlists.UseCases.UpdateWishlist;
 using GivingGifts.Wishlists.UseCases.V1.CreateWishlist;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WishlistDto = GivingGifts.Wishlists.API.DTO.V1.WishlistDto;
+using WishlistDto = GivingGifts.Wishlists.API.ApiModels.V1.WishlistDto;
 
 namespace GivingGifts.WebAPI.Controllers.v1;
 
@@ -32,8 +33,10 @@ public class WishlistsController : ControllerBase
     [HttpHead]
     public async Task<Result<WishlistDto[]>> Get()
     {
-        var result = await _mediator.Send(new UserWishlistsQuery());
-        return result.Map(WishlistDtoMapper.ToApiDto);
+        var result = await _mediator.Send(new WishlistsQuery(
+            Paging.DefaultPage,
+            int.MaxValue));
+        return result.Map(r => WishlistDtoMapper.ToApiDto(r.Data));
     }
 
     [HttpPost]

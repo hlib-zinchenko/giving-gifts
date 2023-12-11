@@ -3,8 +3,11 @@ using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
 using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
-using GivingGifts.Wishlists.API.DTO.V2;
-using GivingGifts.Wishlists.API.DTO.V2.Mappers;
+using GivingGifts.SharedKernel.API.Models;
+using GivingGifts.WebAPI.Controllers.v2.Extensions;
+using GivingGifts.Wishlists.API.ApiModels.V2;
+using GivingGifts.Wishlists.API.ApiModels.V2.Mappers;
+using GivingGifts.Wishlists.API.Constants;
 using GivingGifts.Wishlists.UseCases.CreateWish;
 using GivingGifts.Wishlists.UseCases.DeleteWish;
 using GivingGifts.Wishlists.UseCases.GetWish;
@@ -14,7 +17,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using WishDto = GivingGifts.Wishlists.API.DTO.V2.WishDto;
 
 namespace GivingGifts.WebAPI.Controllers.v2;
 
@@ -32,33 +34,40 @@ public class WishesController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet]
+    [HttpGet(Name = RouteNames.Wishes.GetWishesList)]
     [HttpHead]
-    public async Task<Result<WishDto[]>> GetList(Guid wishlistId)
+    public async Task<ActionResult<Wish[]>> GetList(
+        [FromRoute] Guid wishlistId,
+        [FromQuery] WishesRequest request)
     {
-        var result = await _mediator.Send(new WishesQuery(wishlistId));
-        return result.Map(WishDtoMapper.ToApiDto);
+        var query = new WishesQuery(wishlistId, request.Page, request.PageSize);
+        var result = await _mediator.Send(query);
+        return result.Map(pr => pr.Map(WishMapper.ToApiModel))
+            .ToPagedActionResult(
+                this,
+                this.GenerateGetListResourceUrl(wishlistId, request, result, ResourceUriType.PreviousPage),
+                this.GenerateGetListResourceUrl(wishlistId, request, result, ResourceUriType.NextPage));
     }
 
-    [Route("{wishId:guid}", Name = "GetWish")]
+    [Route("{wishId:guid}", Name = RouteNames.Wishes.GetWish)]
     [HttpGet]
     [HttpHead]
-    public async Task<Result<WishDto>> Get(Guid wishId, Guid wishlistId)
+    public async Task<Result<Wish>> Get(Guid wishId, Guid wishlistId)
     {
         var result = await _mediator.Send(new WishQuery(wishId, wishlistId));
-        return result.Map(WishDtoMapper.ToApiDto);
+        return result.Map(WishMapper.ToApiModel);
     }
 
     [HttpPost]
-    public async Task<ActionResult<WishDto>> Create(
-        [FromBody] CreateWishDto request,
+    public async Task<ActionResult<Wish>> Create(
+        [FromBody] CreateWishRequest request,
         Guid wishlistId)
     {
         var result = await _mediator.Send(new CreateWishCommand(
             wishlistId, request.Name!, request.Url, request.Notes));
-        return result.Map(WishDtoMapper.ToApiDto).ToCreatedAtRouteActionResult(
+        return result.Map(WishMapper.ToApiModel).ToCreatedAtRouteActionResult(
             this,
-            "GetWish",
+            RouteNames.Wishes.GetWish,
             new { wishlistId, wishId = result.Value?.Id });
     }
 
@@ -70,8 +79,8 @@ public class WishesController : ControllerBase
     }
 
     [HttpPut("{wishId:guid}")]
-    public async Task<Result<WishDto>> Update(
-        [FromBody] UpdateWishDto request,
+    public async Task<Result<Wish>> Update(
+        [FromBody] UpdateWishRequest request,
         Guid wishlistId,
         Guid wishId)
     {
@@ -81,18 +90,18 @@ public class WishesController : ControllerBase
     }
 
     [HttpPatch("{wishId:guid}")]
-    public async Task<Result<WishDto>> UpdatePartial(
-        [FromBody] JsonPatchDocument<UpdateWishDto> request,
+    public async Task<Result<Wish>> UpdatePartial(
+        [FromBody] JsonPatchDocument<UpdateWishRequest> request,
         Guid wishlistId,
         Guid wishId)
     {
         var wish = await _mediator.Send(new WishQuery(wishId, wishlistId));
         if (wish.Status != ResultStatus.Ok)
         {
-            return wish.Map(WishDtoMapper.ToApiDto);
+            return wish.Map(WishMapper.ToApiModel);
         }
 
-        var updateWishDto = WishDtoMapper.ToUpdateWishDto(wish.Value);
+        var updateWishDto = WishMapper.ToUpdateWishRequest(wish.Value);
         request.ApplyTo(updateWishDto);
         var result = await _mediator.Send(new UpdateWishCommand(
             wishlistId, wishId, updateWishDto.Name!, updateWishDto.Url, updateWishDto.Notes));

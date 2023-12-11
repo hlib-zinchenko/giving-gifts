@@ -4,14 +4,14 @@ using Asp.Versioning;
 using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
 using GivingGifts.SharedKernel.API.ModelBinders;
-using GivingGifts.Wishlists.API.DTO.V2.Mappers;
+using GivingGifts.Wishlists.API.ApiModels.V2;
+using GivingGifts.Wishlists.API.ApiModels.V2.Mappers;
+using GivingGifts.Wishlists.API.Constants;
 using GivingGifts.Wishlists.UseCases.CreateWishes;
-using GivingGifts.Wishlists.UseCases.GetWishes;
+using GivingGifts.Wishlists.UseCases.GetWishCollection;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using CreateWishDto = GivingGifts.Wishlists.API.DTO.V2.CreateWishDto;
-using WishDto = GivingGifts.Wishlists.API.DTO.V2.WishDto;
 
 namespace GivingGifts.WebAPI.Controllers.v2;
 
@@ -29,22 +29,22 @@ public class WishCollectionsController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("{wishIds}", Name = "GetWishCollection")]
+    [HttpGet("{wishIds}", Name = RouteNames.WishCollections.GetWishCollection)]
     [HttpHead]
-    public async Task<Result<WishDto[]>> Get(
+    public async Task<Result<Wish[]>> Get(
         [FromRoute] Guid wishlistId,
         [ModelBinder(BinderType = typeof(ArrayModelBinder))] [FromRoute]
         Guid[] wishIds)
     {
-        var query = new WishesQuery(wishlistId, wishIds);
+        var query = new WishCollectionQuery(wishlistId, wishIds);
         var result = await _mediator.Send(query);
-        return result.Map(WishDtoMapper.ToApiDto);
+        return result.Map(WishMapper.ToApiModel);
     }
 
     [HttpPost]
-    public async Task<ActionResult<WishDto[]>> Create(
+    public async Task<ActionResult<Wish[]>> Create(
         [FromRoute] Guid wishlistId,
-        [FromBody] CreateWishDto[] wishes)
+        [FromBody] CreateWishRequest[] wishes)
     {
         var command = new CreateWishesCommand(
             wishlistId,
@@ -55,9 +55,9 @@ public class WishCollectionsController : ControllerBase
         var result = await _mediator.Send(command);
         var wishIdsAString = string.Join(",",
             result.Value?.Select(w => w.Id).ToArray() ?? Array.Empty<Guid>());
-        return result.Map(WishDtoMapper.ToApiDto).ToCreatedAtRouteActionResult(
+        return result.Map(WishMapper.ToApiModel).ToCreatedAtRouteActionResult(
             this,
-            "GetWishCollection",
+            RouteNames.WishCollections.GetWishCollection,
             new { wishlistId, wishIds = wishIdsAString });
     }
 

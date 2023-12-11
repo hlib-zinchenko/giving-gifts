@@ -1,7 +1,12 @@
+using GivingGifts.SharedKernel.Core;
+
 namespace GivingGifts.Wishlists.UseCases.GetWishes;
 
 public interface IWishesQueryService
 {
-    Task<IEnumerable<UserWishDto>> GetWishesAsync(Guid wishlistId);
-    Task<IEnumerable<UserWishDto>> GetWishesAsync(Guid wishlistId, Guid[] wishIds);
+    Task<PagedData<UserWishDto>> GetWishesAsync(
+        Guid userId,
+        Guid wishlistId,
+        int page,
+        int pageSize);
 }

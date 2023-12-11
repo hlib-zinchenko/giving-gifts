@@ -3,18 +3,19 @@ using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
 using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
-using GivingGifts.Wishlists.API.DTO.V2;
-using GivingGifts.Wishlists.API.DTO.V2.Mappers;
+using GivingGifts.SharedKernel.API.Models;
+using GivingGifts.WebAPI.Controllers.v2.Extensions;
+using GivingGifts.Wishlists.API.ApiModels.V2;
+using GivingGifts.Wishlists.API.ApiModels.V2.Mappers;
+using GivingGifts.Wishlists.API.Constants;
 using GivingGifts.Wishlists.UseCases.CreateWishlist;
 using GivingGifts.Wishlists.UseCases.DeleteWishlist;
-using GivingGifts.Wishlists.UseCases.GetUserWishlists;
 using GivingGifts.Wishlists.UseCases.GetWishlist;
+using GivingGifts.Wishlists.UseCases.GetWishlists;
 using GivingGifts.Wishlists.UseCases.UpdateWishlist;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WishlistDto = GivingGifts.Wishlists.API.DTO.V2.WishlistDto;
-using WishlistWithWishesDto = GivingGifts.Wishlists.API.DTO.V2.WishlistWithWishesDto;
 
 namespace GivingGifts.WebAPI.Controllers.v2;
 
@@ -32,32 +33,38 @@ public class WishlistsController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet]
+    [HttpGet(Name = RouteNames.Wishlists.GetWishlistList)]
     [HttpHead]
-    public async Task<Result<WishlistDto[]>> GetList()
+    public async Task<ActionResult<Wishlist[]>> GetList(
+        [FromQuery] WishlistsRequest request)
     {
-        var result = await _mediator.Send(new UserWishlistsQuery());
-        return result.Map(WishlistDtoMapper.ToApiDto);
+        var query = new WishlistsQuery(request.Page, request.PageSize);
+        var result = await _mediator.Send(query);
+        return result.Map(pr => pr.Map(WishlistMapper.ToApiModel))
+            .ToPagedActionResult(
+                this,
+                this.GenerateGetListResourceUrl(request, result, ResourceUriType.PreviousPage),
+                this.GenerateGetListResourceUrl(request, result, ResourceUriType.NextPage));
     }
 
-    [Route("{wishlistId:guid}", Name = "GetWishlist")]
+    [Route("{wishlistId:guid}", Name = RouteNames.Wishlists.GetWishlist)]
     [HttpGet]
     [HttpHead]
-    public async Task<Result<WishlistWithWishesDto>> Get([FromRoute] Guid wishListId)
+    public async Task<Result<WishlistWithWishes>> Get([FromRoute] Guid wishListId)
     {
         var result = await _mediator.Send(new WishlistQuery(wishListId));
-        return result.Map(WishlistWithWishesDtoMapper.ToApiDto);
+        return result.Map(WishlistWithWishesMapper.ToApiModel);
     }
 
     [HttpPost]
-    public async Task<ActionResult<WishlistDto>> Create([FromBody] CreateWishlistDto request)
+    public async Task<ActionResult<Wishlist>> Create([FromBody] CreateWishlistRequest request)
     {
         var result = await _mediator.Send(new CreateWishlistCommand(
             request.Name,
-            CreateWishDtoMapper.ToCommandDto(request.Wishes)));
-        return result.Map(WishlistDtoMapper.ToApiDto).ToCreatedAtRouteActionResult(
+            CreateWishRequestMapper.ToCommandDto(request.Wishes)));
+        return result.Map(WishlistMapper.ToApiModel).ToCreatedAtRouteActionResult(
             this,
-            "GetWishlist",
+            RouteNames.Wishlists.GetWishlist,
             new { wishListId = result.Value?.Id });
     }
 
@@ -69,7 +76,7 @@ public class WishlistsController : ControllerBase
     }
 
     [HttpPut("{wishlistId:guid}")]
-    public async Task<Result> Update(Guid wishlistId, [FromBody] UpdateWishlistDto request)
+    public async Task<Result> Update(Guid wishlistId, [FromBody] UpdateWishlistRequest request)
     {
         var result = await _mediator.Send(new UpdateWishlistCommand(wishlistId, request.Name));
         return result;

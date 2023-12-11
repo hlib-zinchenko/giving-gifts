@@ -1,45 +1,36 @@
-using Dapper;
+using GivingGifts.SharedKernel.Core;
+using GivingGifts.SharedKernel.Infrastructure;
 using GivingGifts.Wishlists.UseCases.GetWishes;
+using Microsoft.EntityFrameworkCore;
+using UserWishDto = GivingGifts.Wishlists.UseCases.GetWishes.UserWishDto;
 
 namespace GivingGifts.Wishlists.Infrastructure.Data.Queries;
 
 public class WishesQueryService : IWishesQueryService
 {
-    private readonly WishlistsDbContextDapper _dbContext;
+    private readonly WishlistsDbContextEf _wishlistsDbContextEf;
 
-    public WishesQueryService(WishlistsDbContextDapper dbContext)
+    public WishesQueryService(WishlistsDbContextEf wishlistsDbContextEf)
     {
-        _dbContext = dbContext;
-    }
-    public async Task<IEnumerable<UserWishDto>> GetWishesAsync(Guid wishlistId)
-    {
-        const string query = """
-                             SELECT WL."UserId", W."WishlistId", W."Id", W."Name", W."Url", W."Notes"
-                             FROM "Wishes" as W
-                             JOIN "Wishlists" as WL ON W."WishlistId" = WL."Id"
-                             WHERE W."WishlistId" = @WishlistId
-                             """;
-
-        using (var connection = _dbContext.CreateConnection())
-        {
-            return await connection.QueryAsync<UserWishDto>(query, new { wishlistId });
-        }
+        _wishlistsDbContextEf = wishlistsDbContextEf;
     }
 
-    public async Task<IEnumerable<UserWishDto>> GetWishesAsync(Guid wishlistId, Guid[] wishIds)
+    public Task<PagedData<UserWishDto>> GetWishesAsync(Guid userId, Guid wishlistId, int page, int pageSize)
     {
-        const string query = """
-                             SELECT WL."UserId", W."WishlistId", W."Id", W."Name", W."Url"
-                             FROM "Wishes" as W
-                             JOIN "Wishlists" as WL ON W."WishlistId" = WL."Id"
-                             WHERE W."WishlistId" = @WishlistId AND W."Id" = ANY (@WishIds)
-                             """;
-
-        using (var connection = _dbContext.CreateConnection())
-        {
-            return await connection.QueryAsync<UserWishDto>(
-                query,
-                new { wishlistId, wishIds });
-        }
+        return _wishlistsDbContextEf
+            .Wishlists
+            .AsNoTracking()
+            .Where(w => w.Id == wishlistId && w.UserId == userId)
+            .SelectMany(w => w.Wishes)
+            .Select(w => new UserWishDto
+            {
+                Id = w.Id,
+                Name = w.Name,
+                Notes = w.Notes,
+                UserId = userId,
+                Url = w.Url,
+                WishlistId = wishlistId
+            })
+            .ToPagedDataAsync(page, pageSize);
     }
 }
