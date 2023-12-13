@@ -1,6 +1,8 @@
+using System.Net;
 using Ardalis.Result;
-using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
+using GivingGifts.SharedKernel.API.Extensions.Result;
+using GivingGifts.SharedKernel.API.ResultStatusMapping;
 using GivingGifts.Users.API.ApiModels;
 using GivingGifts.Users.API.ApiModels.Mappers;
 using GivingGifts.Users.UseCases.Login;
@@ -13,7 +15,6 @@ namespace GivingGifts.WebAPI.Controllers.v1;
 [ApiController]
 [ApiVersion(1.0)]
 [Route("api/v{version:apiVersion}/auth")]
-[TranslateResultToActionResult]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -24,17 +25,19 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<Result<AuthTokens>> Login([FromBody] LoginRequest request)
+    [OkResultMappingOverride(HttpStatusCode.OK)]
+    public async Task<ActionResult<AuthTokens>> Login([FromBody] LoginRequest request)
     {
         var result = await _mediator.Send(new LoginUserCommand(request.Email, request.Password));
-        return result.Map(AuthTokensDtoMapper.ToApiModel);
+        return result.Map(AuthTokensDtoMapper.ToApiModel).ToActionResult(this);
     }
 
     [HttpPost("register")]
-    public async Task<Result<AuthTokens>> Register([FromBody] RegisterRequest request)
+    [OkResultMappingOverride(HttpStatusCode.OK)]
+    public async Task<ActionResult<AuthTokens>> Register([FromBody] RegisterRequest request)
     {
         var result = await _mediator.Send(
             new RegisterUserCommand(request.FirstName, request.LastName, request.Email, request.Password));
-        return result.Map(AuthTokensDtoMapper.ToApiModel);
+        return result.Map(AuthTokensDtoMapper.ToApiModel).ToActionResult(this);
     }
 }

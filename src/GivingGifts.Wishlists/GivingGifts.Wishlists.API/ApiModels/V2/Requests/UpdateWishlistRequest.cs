@@ -1,4 +1,4 @@
-namespace GivingGifts.Wishlists.API.ApiModels.V2;
+namespace GivingGifts.Wishlists.API.ApiModels.V2.Requests;
 
 public class UpdateWishlistRequest
 {

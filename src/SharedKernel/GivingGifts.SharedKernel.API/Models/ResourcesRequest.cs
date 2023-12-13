@@ -2,7 +2,10 @@ using GivingGifts.SharedKernel.Core.Constants;
 
 namespace GivingGifts.SharedKernel.API.Models;
 
-public abstract class PagedRequest
+public abstract class ResourcesRequest<TResource> :
+    IDataShapingRequest<TResource>,
+    IPaginateRequest,
+    IOrderByRequest
 {
     private int _page = Paging.DefaultPage;
     private int _pageSize = Paging.DefaultPageSize;
@@ -22,4 +25,8 @@ public abstract class PagedRequest
             ? Paging.DefaultPageSize
             : value;
     }
+
+
+    public string? OrderBy { get; set; }
+    public string? Fields { get; set; }
 }
