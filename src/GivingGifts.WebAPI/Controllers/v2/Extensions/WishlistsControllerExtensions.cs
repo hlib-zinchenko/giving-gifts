@@ -1,7 +1,7 @@
 using Ardalis.Result;
 using GivingGifts.SharedKernel.API.Models;
 using GivingGifts.SharedKernel.Core;
-using GivingGifts.Wishlists.API.ApiModels.V2;
+using GivingGifts.Wishlists.API.ApiModels.V2.Requests;
 using GivingGifts.Wishlists.API.Constants;
 
 namespace GivingGifts.WebAPI.Controllers.v2.Extensions;

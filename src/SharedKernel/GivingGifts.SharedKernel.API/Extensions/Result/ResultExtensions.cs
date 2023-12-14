@@ -1,53 +1,76 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Ardalis.Result;
+using GivingGifts.SharedKernel.API.ResultStatusMapping;
 using GivingGifts.SharedKernel.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using IResult = Ardalis.Result.IResult;
 
 namespace GivingGifts.SharedKernel.API.Extensions.Result;
 
 public static class ResultExtensions
 {
+    public static ActionResult ToActionResult(
+        this IResult result,
+        ControllerBase controller)
+    {
+        var resultStatusMap = controller.HttpContext.RequestServices.GetRequiredService<ResultStatusMap>();
+
+        var attributes = controller
+            .ControllerContext
+            .ActionDescriptor.MethodInfo
+            .GetCustomAttributes(false)
+            .OfType<IResultMappingOverrideAttribute>();
+        var overrides = attributes
+            .ToDictionary(
+                a => a.ResultStatus,
+                a => a.HttpStatusCode);
+
+        var resultStatusOptions = resultStatusMap[result.Status];
+        return resultStatusOptions.Handle(result, controller, overrides);
+    }
+
+    public static ActionResult<T> ToActionResult<T>(
+        this IResult result,
+        ControllerBase controller)
+    {
+        var resultStatusMap = controller.HttpContext.RequestServices.GetRequiredService<ResultStatusMap>();
+
+        var resultStatusOptions = resultStatusMap[result.Status];
+        return resultStatusOptions.Handle(result, controller);
+    }
+
     public static ActionResult<T> ToCreatedAtRouteActionResult<T>(
         this Result<T> result,
         ControllerBase controller,
         string? routeName,
         object? routeValues)
     {
-        var resultStatusMap = new ResultStatusMap().AddDefaultMap();
+        var resultStatusMap = controller.HttpContext.RequestServices.GetRequiredService<ResultStatusMap>();
 
         var resultStatusOptions = resultStatusMap[result.Status];
-        var statusCode = (int)resultStatusOptions.GetStatusCode(controller.HttpContext.Request.Method);
-
         return result.Status switch
         {
             ResultStatus.Ok => controller.CreatedAtRoute(routeName, routeValues, result.GetValue()),
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-            _ => resultStatusOptions.ResponseType == null
-                ? (ActionResult)controller.StatusCode(statusCode)
-                : controller.StatusCode(statusCode, resultStatusOptions.GetResponseObject(controller, result))
+            _ => resultStatusOptions.Handle(result, controller),
         };
     }
 
-    public static ActionResult<T[]> ToPagedActionResult<T>(
+    public static ActionResult ToPagedActionResult<T>(
         this Result<PagedData<T>> result,
         ControllerBase controller,
         string? previousPageLink,
         string? nextPageLink)
     {
-        var resultStatusMap = new ResultStatusMap().AddDefaultMap();
+        var resultStatusMap = controller.HttpContext.RequestServices.GetRequiredService<ResultStatusMap>();
 
         var resultStatusOptions = resultStatusMap[result.Status];
-        var statusCode = (int)resultStatusOptions.GetStatusCode(controller.HttpContext.Request.Method);
 
         if (result.Status != ResultStatus.Ok)
         {
-            return resultStatusOptions.ResponseType == null
-                ? controller.StatusCode(statusCode)
-                : controller.StatusCode(
-                    statusCode,
-                    resultStatusOptions.GetResponseObject(controller, result));
+            return resultStatusOptions.Handle(result, controller);
         }
 
         var pagedInfo = new PagedInfo(

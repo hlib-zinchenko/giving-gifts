@@ -1,11 +1,12 @@
 using Ardalis.Result;
-using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
 using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
+using GivingGifts.SharedKernel.API.FilterAttributes;
 using GivingGifts.SharedKernel.API.ModelBinders;
 using GivingGifts.Wishlists.API.ApiModels.V2;
 using GivingGifts.Wishlists.API.ApiModels.V2.Mappers;
+using GivingGifts.Wishlists.API.ApiModels.V2.Requests;
 using GivingGifts.Wishlists.API.Constants;
 using GivingGifts.Wishlists.UseCases.CreateWishes;
 using GivingGifts.Wishlists.UseCases.GetWishCollection;
@@ -19,7 +20,6 @@ namespace GivingGifts.WebAPI.Controllers.v2;
 [ApiVersion(2.0)]
 [Route("api/v{version:apiVersion}/wishlists/{wishlistId:guid}/wish-collections")]
 [Authorize]
-[TranslateResultToActionResult]
 public class WishCollectionsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -31,14 +31,18 @@ public class WishCollectionsController : ControllerBase
 
     [HttpGet("{wishIds}", Name = RouteNames.WishCollections.GetWishCollection)]
     [HttpHead]
-    public async Task<Result<Wish[]>> Get(
+    [ServiceFilter(typeof(ValidateDataShapingFilterAttribute))]
+    public async Task<ActionResult> Get(
         [FromRoute] Guid wishlistId,
         [ModelBinder(BinderType = typeof(ArrayModelBinder))] [FromRoute]
-        Guid[] wishIds)
+        Guid[] wishIds,
+        [FromQuery] WishCollectionRequest request)
     {
         var query = new WishCollectionQuery(wishlistId, wishIds);
         var result = await _mediator.Send(query);
-        return result.Map(WishMapper.ToApiModel);
+        return result.Map(WishMapper.ToApiModel)
+            .Shape(request)
+            .ToActionResult(this);
     }
 
     [HttpPost]

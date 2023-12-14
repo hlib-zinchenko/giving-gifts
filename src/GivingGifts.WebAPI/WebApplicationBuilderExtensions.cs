@@ -1,11 +1,10 @@
-using System.Net;
 using System.Reflection;
 using System.Text;
-using Ardalis.Result;
-using Ardalis.Result.AspNetCore;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Asp.Versioning.Conventions;
+using GivingGifts.SharedKernel.API;
+using GivingGifts.SharedKernel.API.FilterAttributes;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.SharedKernel.Core.Extensions;
 using GivingGifts.Users.Infrastructure;
@@ -36,15 +35,6 @@ public static class WebApplicationBuilderExtensions
         services.AddControllers(configure =>
         {
             configure.ReturnHttpNotAcceptable = true;
-            configure.AddResultConvention(resultStatusMap => resultStatusMap
-                .AddDefaultMap()
-                .For(ResultStatus.Ok, HttpStatusCode.OK, resultStatusOptions => resultStatusOptions
-                    .For("POST", HttpStatusCode.Created)
-                    .For("DELETE", HttpStatusCode.NoContent)
-                    .For("PUT", HttpStatusCode.NoContent))
-                .For(ResultStatus.Error, HttpStatusCode.InternalServerError)
-                .For(ResultStatus.Invalid, HttpStatusCode.UnprocessableEntity)
-            );
         })
         .AddNewtonsoftJson(setupAction =>
         {
@@ -84,6 +74,7 @@ public static class WebApplicationBuilderExtensions
         services.AddAuthorization();
         services
             .AddSharedKernelCore()
+            .SharedKernelApi()
             .AddWishlistsDomain()
             .AddWishlistsInfrastructure(builder.Configuration)
             .AddWishlistsUseCases()
@@ -147,6 +138,8 @@ public static class WebApplicationBuilderExtensions
             });
         services.ConfigureOptions<NamedSwaggerGenOptions>();
 
+        services.AddScoped<ValidateDataShapingFilterAttribute>();
+        
         return builder.Build();
     }
 
