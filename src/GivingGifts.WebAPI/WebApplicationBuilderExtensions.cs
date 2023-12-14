@@ -4,7 +4,7 @@ using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Asp.Versioning.Conventions;
 using GivingGifts.SharedKernel.API;
-using GivingGifts.SharedKernel.API.Middleware;
+using GivingGifts.SharedKernel.API.FilterAttributes;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.SharedKernel.Core.Extensions;
 using GivingGifts.Users.Infrastructure;

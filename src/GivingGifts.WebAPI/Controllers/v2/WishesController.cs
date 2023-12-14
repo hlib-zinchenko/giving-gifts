@@ -2,6 +2,7 @@ using Ardalis.Result;
 using Asp.Versioning;
 using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
+using GivingGifts.SharedKernel.API.FilterAttributes;
 using GivingGifts.SharedKernel.API.Models;
 using GivingGifts.WebAPI.Controllers.v2.Extensions;
 using GivingGifts.Wishlists.API.ApiModels.V2;
@@ -35,6 +36,7 @@ public class WishesController : ControllerBase
 
     [HttpGet(Name = RouteNames.Wishes.GetWishesList)]
     [HttpHead]
+    [ServiceFilter(typeof(ValidateDataShapingFilterAttribute))]
     public async Task<ActionResult<Wish[]>> GetList(
         [FromRoute] Guid wishlistId,
         [FromQuery] WishesRequest request)
@@ -53,6 +55,7 @@ public class WishesController : ControllerBase
     [Route("{wishId:guid}", Name = RouteNames.Wishes.GetWish)]
     [HttpGet]
     [HttpHead]
+    [ServiceFilter(typeof(ValidateDataShapingFilterAttribute))]
     public async Task<ActionResult<Wish>> Get(
         Guid wishId,
         Guid wishlistId,

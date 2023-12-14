@@ -74,7 +74,12 @@ public class ResultStatusMap
 
     private static ActionResult UnprocessableEntityHandler(IResult result, HttpStatusCode statusCode, ControllerBase controller)
     {
-        return ErrorHandlerResultFormatter(result, statusCode, controller, "Something went wrong.");
+        foreach (var error in result.ValidationErrors)
+        {
+            controller.ModelState.AddModelError(error.Identifier, error.ErrorMessage);
+        }
+
+        return controller.StatusCode((int)statusCode, new ValidationProblemDetails(controller.ModelState));
     }
 
     private static ActionResult NotFoundHandler(IResult result, HttpStatusCode statusCode, ControllerBase controller)

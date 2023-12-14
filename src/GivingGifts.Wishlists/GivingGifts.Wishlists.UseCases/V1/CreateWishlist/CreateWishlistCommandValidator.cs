@@ -3,7 +3,7 @@ using GivingGifts.SharedKernel.Core.Constants;
 
 namespace GivingGifts.Wishlists.UseCases.V1.CreateWishlist;
 
-public class CreateWishlistCommandValidator : AbstractValidator<UseCases.CreateWishlist.CreateWishlistCommand>
+public class CreateWishlistCommandValidator : AbstractValidator<CreateWishlistCommand>
 {
     public CreateWishlistCommandValidator()
     {

@@ -2,6 +2,7 @@ using Ardalis.Result;
 using Asp.Versioning;
 using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
+using GivingGifts.SharedKernel.API.FilterAttributes;
 using GivingGifts.SharedKernel.API.ModelBinders;
 using GivingGifts.Wishlists.API.ApiModels.V2;
 using GivingGifts.Wishlists.API.ApiModels.V2.Mappers;
@@ -30,11 +31,12 @@ public class WishCollectionsController : ControllerBase
 
     [HttpGet("{wishIds}", Name = RouteNames.WishCollections.GetWishCollection)]
     [HttpHead]
+    [ServiceFilter(typeof(ValidateDataShapingFilterAttribute))]
     public async Task<ActionResult> Get(
         [FromRoute] Guid wishlistId,
         [ModelBinder(BinderType = typeof(ArrayModelBinder))] [FromRoute]
         Guid[] wishIds,
-        WishCollectionRequest request)
+        [FromQuery] WishCollectionRequest request)
     {
         var query = new WishCollectionQuery(wishlistId, wishIds);
         var result = await _mediator.Send(query);
