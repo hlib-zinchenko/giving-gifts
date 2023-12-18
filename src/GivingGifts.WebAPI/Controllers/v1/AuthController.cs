@@ -25,7 +25,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    [OkResultMappingOverride(HttpStatusCode.OK)]
+    [ResultMappingOverride(ResultStatus.Ok, HttpStatusCode.OK)]
     public async Task<ActionResult<AuthTokens>> Login([FromBody] LoginRequest request)
     {
         var result = await _mediator.Send(new LoginUserCommand(request.Email, request.Password));
@@ -33,7 +33,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    [OkResultMappingOverride(HttpStatusCode.OK)]
+    [ResultMappingOverride(ResultStatus.Ok, HttpStatusCode.OK)]
     public async Task<ActionResult<AuthTokens>> Register([FromBody] RegisterRequest request)
     {
         var result = await _mediator.Send(
