@@ -1,8 +1,8 @@
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.SharedKernel.Infrastructure;
+using GivingGifts.Wishlists.Core.DTO;
 using GivingGifts.Wishlists.UseCases.GetWishes;
 using Microsoft.EntityFrameworkCore;
-using UserWishDto = GivingGifts.Wishlists.UseCases.GetWishes.UserWishDto;
 
 namespace GivingGifts.Wishlists.Infrastructure.Data.Queries;
 
@@ -15,22 +15,26 @@ public class WishesQueryService : IWishesQueryService
         _wishlistsDbContextEf = wishlistsDbContextEf;
     }
 
-    public Task<PagedData<UserWishDto>> GetWishesAsync(Guid userId, Guid wishlistId, int page, int pageSize)
+    public Task<PagedData<WishDto>> GetWishesAsync(
+        Guid userId,
+        Guid wishlistId,
+        int page,
+        int pageSize,
+        SortingParameter[] sortingParams)
     {
         return _wishlistsDbContextEf
             .Wishlists
             .AsNoTracking()
             .Where(w => w.Id == wishlistId && w.UserId == userId)
             .SelectMany(w => w.Wishes)
-            .Select(w => new UserWishDto
+            .Select(w => new WishDto
             {
                 Id = w.Id,
                 Name = w.Name,
                 Notes = w.Notes,
-                UserId = userId,
                 Url = w.Url,
-                WishlistId = wishlistId
             })
+            .OrderBy(sortingParams)
             .ToPagedDataAsync(page, pageSize);
     }
 }

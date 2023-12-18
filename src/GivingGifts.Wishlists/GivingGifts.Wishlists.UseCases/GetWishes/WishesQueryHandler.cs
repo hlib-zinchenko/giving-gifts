@@ -22,10 +22,13 @@ public class WishesQueryHandler : IRequestHandler<WishesQuery, Result<PagedData<
         WishesQuery request, CancellationToken cancellationToken)
     {
         var queryResult = await _wishesQueryService
-            .GetWishesAsync(_userContext.UserId, request.WishlistId, request.Page, request.PageSize);
-        var wishes = queryResult.Data.ToArray();
+            .GetWishesAsync(
+                _userContext.UserId,
+                request.WishlistId,
+                request.Page,
+                request.PageSize,
+                request.SortingParams);
 
-        return Result<PagedData<WishDto>>.Success(
-            queryResult.Map(w => new WishDto(w.Id, w.Name, w.Url, w.Notes)));
+        return Result<PagedData<WishDto>>.Success(queryResult);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Dynamic;
 using System.Reflection;
 using Ardalis.Result;
-using GivingGifts.SharedKernel.API.Models;
+using GivingGifts.SharedKernel.API.Resources;
 using GivingGifts.SharedKernel.Core;
 
 namespace GivingGifts.SharedKernel.API.Extensions.Result;
@@ -51,17 +51,19 @@ public static class ResultExtensionsDataShaping
         var propertiesToReturn = GetPropertiesToReturn<T>(request);
         return result.Map(pagedData =>
         {
-            return pagedData.Map(dataItem =>
+            return pagedData.Map(data => data.Select(dataItem =>
             {
-                var mappedResult = new ExpandoObject();
-                foreach (var propertyInfo in propertiesToReturn)
                 {
-                    (mappedResult as IDictionary<string, object?>)[propertyInfo.Name]
-                        = propertyInfo.GetValue(dataItem);
-                }
+                    var mappedResult = new ExpandoObject();
+                    foreach (var propertyInfo in propertiesToReturn)
+                    {
+                        (mappedResult as IDictionary<string, object?>)[propertyInfo.Name]
+                            = propertyInfo.GetValue(dataItem);
+                    }
 
-                return mappedResult;
-            });
+                    return mappedResult;
+                }
+            }));
         });
     }
 
@@ -69,7 +71,7 @@ public static class ResultExtensionsDataShaping
     {
         var properties = typeof(T)
             .GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        var requestedFields = request.GetFields().ToArray();
+        var requestedFields = request.GetDataShapingFields().ToArray();
         var propertiesToReturn = requestedFields.Length == 0
             ? properties
             : properties.Where(p =>

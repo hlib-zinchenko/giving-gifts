@@ -1,14 +1,16 @@
 using Ardalis.Result;
 using Asp.Versioning;
+using GivingGifts.SharedKernel.API.Enums;
 using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
-using GivingGifts.SharedKernel.API.FilterAttributes;
-using GivingGifts.SharedKernel.API.Models;
+using GivingGifts.SharedKernel.API.Resources.FilterAttributes;
+using GivingGifts.SharedKernel.API.Resources.Mapping;
 using GivingGifts.WebAPI.Controllers.v2.Extensions;
 using GivingGifts.Wishlists.API.ApiModels.V2;
 using GivingGifts.Wishlists.API.ApiModels.V2.Mappers;
 using GivingGifts.Wishlists.API.ApiModels.V2.Requests;
 using GivingGifts.Wishlists.API.Constants;
+using GivingGifts.Wishlists.Core.DTO;
 using GivingGifts.Wishlists.UseCases.CreateWishlist;
 using GivingGifts.Wishlists.UseCases.DeleteWishlist;
 using GivingGifts.Wishlists.UseCases.GetWishlist;
@@ -26,23 +28,32 @@ namespace GivingGifts.WebAPI.Controllers.v2;
 [Authorize]
 public class WishlistsController : ControllerBase
 {
+    private readonly IResourceMapper _resourceMapper;
     private readonly IMediator _mediator;
 
-    public WishlistsController(IMediator mediator)
+    public WishlistsController(
+        IResourceMapper resourceMapper,
+        IMediator mediator)
     {
+        _resourceMapper = resourceMapper;
         _mediator = mediator;
     }
 
     [HttpGet(Name = RouteNames.Wishlists.GetWishlistList)]
     [HttpHead]
-    [ServiceFilter(typeof(ValidateDataShapingFilterAttribute))]
+    [ValidateDataShaping]
+    [ValidateSorting<WishlistDto, Wishlist>]
     public async Task<ActionResult> GetList(
         [FromQuery] WishlistsRequest request)
     {
-        var query = new WishlistsQuery(request.Page, request.PageSize);
+        var query = new WishlistsQuery(
+            request.Page,
+            request.PageSize,
+            _resourceMapper.GetSortingParameters<WishlistDto, Wishlist>(request));
         var result = await _mediator.Send(query);
+
         return result
-            .Map(pr => pr.Map(WishlistMapper.ToApiModel))
+            .Map(pr => pr.Map(_resourceMapper.Map<WishlistDto, Wishlist>))
             .Shape(request)
             .ToPagedActionResult(
                 this,
@@ -53,7 +64,7 @@ public class WishlistsController : ControllerBase
     [Route("{wishlistId:guid}", Name = RouteNames.Wishlists.GetWishlist)]
     [HttpGet]
     [HttpHead]
-    [ServiceFilter(typeof(ValidateDataShapingFilterAttribute))]
+    [ValidateDataShaping]
     public async Task<ActionResult> Get(
         [FromRoute] Guid wishListId,
         [FromQuery] WishlistRequest request)
@@ -71,7 +82,7 @@ public class WishlistsController : ControllerBase
         var result = await _mediator.Send(new CreateWishlistCommand(
             request.Name,
             CreateWishRequestMapper.ToCommandDto(request.Wishes)));
-        return result.Map(WishlistMapper.ToApiModel).ToCreatedAtRouteActionResult(
+        return result.Map(_resourceMapper.Map<WishlistDto, Wishlist>).ToCreatedAtRouteActionResult(
             this,
             RouteNames.Wishlists.GetWishlist,
             new { wishListId = result.Value?.Id });

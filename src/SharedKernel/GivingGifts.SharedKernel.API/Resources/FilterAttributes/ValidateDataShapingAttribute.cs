@@ -1,12 +1,11 @@
 using System.Net;
-using GivingGifts.SharedKernel.API.Models;
 using GivingGifts.SharedKernel.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace GivingGifts.SharedKernel.API.FilterAttributes;
+namespace GivingGifts.SharedKernel.API.Resources.FilterAttributes;
 
-public class ValidateDataShapingFilterAttribute : ActionFilterAttribute
+public class ValidateDataShapingAttribute : ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {
@@ -19,8 +18,7 @@ public class ValidateDataShapingFilterAttribute : ActionFilterAttribute
 
         if (dataShapingRequest == null)
         {
-            base.OnActionExecuting(context);
-            return;
+            throw new Exception($"Controller missing request parameter of {typeof(IDataShapingRequest)}");
         }
 
         var genericParameters = dataShapingRequest.GetType()
@@ -29,7 +27,6 @@ public class ValidateDataShapingFilterAttribute : ActionFilterAttribute
 
         if (genericParameters.Length != 1)
         {
-            base.OnActionExecuting(context);
             return;
         }
 
@@ -39,13 +36,12 @@ public class ValidateDataShapingFilterAttribute : ActionFilterAttribute
             .Select(p => p.Name.ToLowerInvariant());
 
         var invalidFieldsValues = dataShapingRequest
-            .GetFields()
+            .GetDataShapingFields()
             .Where(f => !resourceTypeProperties.Contains(f))
             .ToArray();
 
         if (invalidFieldsValues.Length == 0)
         {
-            base.OnActionExecuting(context);
             return;
         }
 
@@ -64,9 +60,7 @@ public class ValidateDataShapingFilterAttribute : ActionFilterAttribute
         else
         {
             throw new Exception(
-                $"Attribute {nameof(ValidateDataShapingFilterAttribute)} should be applied only for {nameof(ControllerBase)} inheritors");
+                $"Attribute {nameof(ValidateDataShapingAttribute)} should be applied only for {nameof(ControllerBase)} inheritors");
         }
-
-        base.OnActionExecuting(context);
     }
 }

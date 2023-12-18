@@ -1,5 +1,5 @@
 using Ardalis.Result;
-using GivingGifts.SharedKernel.API.Models;
+using GivingGifts.SharedKernel.API.Enums;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.Wishlists.API.ApiModels.V2.Requests;
 using GivingGifts.Wishlists.API.Constants;

@@ -1,14 +1,16 @@
 using Ardalis.Result;
 using Asp.Versioning;
+using GivingGifts.SharedKernel.API.Enums;
 using GivingGifts.SharedKernel.API.Extensions;
 using GivingGifts.SharedKernel.API.Extensions.Result;
-using GivingGifts.SharedKernel.API.FilterAttributes;
-using GivingGifts.SharedKernel.API.Models;
+using GivingGifts.SharedKernel.API.Resources.FilterAttributes;
+using GivingGifts.SharedKernel.API.Resources.Mapping;
 using GivingGifts.WebAPI.Controllers.v2.Extensions;
 using GivingGifts.Wishlists.API.ApiModels.V2;
 using GivingGifts.Wishlists.API.ApiModels.V2.Mappers;
 using GivingGifts.Wishlists.API.ApiModels.V2.Requests;
 using GivingGifts.Wishlists.API.Constants;
+using GivingGifts.Wishlists.Core.DTO;
 using GivingGifts.Wishlists.UseCases.CreateWish;
 using GivingGifts.Wishlists.UseCases.DeleteWish;
 using GivingGifts.Wishlists.UseCases.GetWish;
@@ -28,23 +30,32 @@ namespace GivingGifts.WebAPI.Controllers.v2;
 public class WishesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IResourceMapper _resourceMapper;
 
-    public WishesController(IMediator mediator)
+    public WishesController(
+        IMediator mediator,
+        IResourceMapper resourceMapper)
     {
         _mediator = mediator;
+        _resourceMapper = resourceMapper;
     }
 
     [HttpGet(Name = RouteNames.Wishes.GetWishesList)]
     [HttpHead]
-    [ServiceFilter(typeof(ValidateDataShapingFilterAttribute))]
+    [ValidateDataShaping]
+    [ValidateSorting<WishDto, Wish>]
     public async Task<ActionResult<Wish[]>> GetList(
         [FromRoute] Guid wishlistId,
         [FromQuery] WishesRequest request)
     {
-        var query = new WishesQuery(wishlistId, request.Page, request.PageSize);
+        var query = new WishesQuery(
+            wishlistId,
+            request.Page,
+            request.PageSize,
+            _resourceMapper.GetSortingParameters<WishDto, Wish>(request));
         var result = await _mediator.Send(query);
         return result
-            .Map(pr => pr.Map(WishMapper.ToApiModel))
+            .Map(pr => pr.Map(_resourceMapper.Map<WishDto, Wish>))
             .Shape(request)
             .ToPagedActionResult(
                 this,
@@ -55,14 +66,14 @@ public class WishesController : ControllerBase
     [Route("{wishId:guid}", Name = RouteNames.Wishes.GetWish)]
     [HttpGet]
     [HttpHead]
-    [ServiceFilter(typeof(ValidateDataShapingFilterAttribute))]
+    [ValidateDataShaping]
     public async Task<ActionResult<Wish>> Get(
         Guid wishId,
         Guid wishlistId,
         [FromQuery] WishRequest request)
     {
         var result = await _mediator.Send(new WishQuery(wishId, wishlistId));
-        return result.Map(WishMapper.ToApiModel)
+        return result.Map(_resourceMapper.Map<WishDto, Wish>)
             .Shape(request)
             .ToActionResult(this);
     }
@@ -74,7 +85,7 @@ public class WishesController : ControllerBase
     {
         var result = await _mediator.Send(new CreateWishCommand(
             wishlistId, request.Name!, request.Url, request.Notes));
-        return result.Map(WishMapper.ToApiModel).ToCreatedAtRouteActionResult(
+        return result.Map(_resourceMapper.Map<WishDto, Wish>).ToCreatedAtRouteActionResult(
             this,
             RouteNames.Wishes.GetWish,
             new { wishlistId, wishId = result.Value?.Id });
@@ -109,10 +120,10 @@ public class WishesController : ControllerBase
         var wish = await _mediator.Send(new WishQuery(wishId, wishlistId));
         if (wish.Status != ResultStatus.Ok)
         {
-            return wish.Map(WishMapper.ToApiModel).ToActionResult(this);
+            return wish.Map(_resourceMapper.Map<WishDto, Wish>).ToActionResult(this);
         }
 
-        var updateWishDto = WishMapper.ToUpdateWishRequest(wish.Value);
+        var updateWishDto = WishDtoMapper.ToUpdateWishRequest(wish.Value);
         request.ApplyTo(updateWishDto);
         var result = await _mediator.Send(new UpdateWishCommand(
             wishlistId, wishId, updateWishDto.Name!, updateWishDto.Url, updateWishDto.Notes));

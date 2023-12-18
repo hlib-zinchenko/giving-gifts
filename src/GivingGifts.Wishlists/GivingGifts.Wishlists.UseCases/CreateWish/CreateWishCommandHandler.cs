@@ -34,8 +34,6 @@ public class CreateWishCommandHandler : IRequestHandler<CreateWishCommand, Resul
 
         await _wishlistRepository.SaveChangesAsync();
 
-        Result<WishDto>.Invalid();
-        Result<WishDto[]>.Invalid();
         return Result<WishDto>.Success(new WishDto(wish.Id, wish.Name, wish.Url, wish.Notes));
     }
 }

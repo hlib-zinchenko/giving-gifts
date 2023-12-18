@@ -8,7 +8,13 @@ public static class WishlistWithWishesMapper
         {
             Id = input.Id,
             Name = input.Name,
-            Wishes = WishMapper.ToApiModel(input.Wishes).ToArray(),
+            Wishes = input.Wishes.Select(w => new Wish
+            {
+                Id = w.Id,
+                Name = w.Name,
+                Url = w.Url,
+                Notes = w.Notes,
+            }).ToArray(),
         };
     }
 }

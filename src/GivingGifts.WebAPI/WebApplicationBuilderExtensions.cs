@@ -4,13 +4,14 @@ using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Asp.Versioning.Conventions;
 using GivingGifts.SharedKernel.API;
-using GivingGifts.SharedKernel.API.FilterAttributes;
+using GivingGifts.SharedKernel.API.Resources.FilterAttributes;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.SharedKernel.Core.Extensions;
 using GivingGifts.Users.Infrastructure;
 using GivingGifts.Users.UseCases;
 using GivingGifts.WebAPI.Auth;
 using GivingGifts.WebAPI.Swagger;
+using GivingGifts.Wishlists.API;
 using GivingGifts.Wishlists.Core;
 using GivingGifts.Wishlists.Infrastructure;
 using GivingGifts.Wishlists.UseCases;
@@ -78,6 +79,7 @@ public static class WebApplicationBuilderExtensions
             .AddWishlistsDomain()
             .AddWishlistsInfrastructure(builder.Configuration)
             .AddWishlistsUseCases()
+            .AddWishlistsApi()
             .AddUsersInfrastructure(builder.Configuration)
             .AddUsersUseCases();
 
@@ -138,7 +140,7 @@ public static class WebApplicationBuilderExtensions
             });
         services.ConfigureOptions<NamedSwaggerGenOptions>();
 
-        services.AddScoped<ValidateDataShapingFilterAttribute>();
+        services.AddScoped<ValidateDataShapingAttribute>();
         
         return builder.Build();
     }

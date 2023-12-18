@@ -16,12 +16,14 @@ public class WishlistsQueryService : IWishlistsQueryService
         _wishlistsDbContextEf = wishlistsDbContextEf;
     }
 
-    public Task<PagedData<WishlistDto>> UserWishlistsAsync(Guid userId, int page, int pageSize)
+    public Task<PagedData<WishlistDto>> UserWishlistsAsync(
+        Guid userId, int page, int pageSize, SortingParameter[] sortingParams)
     {
         return _wishlistsDbContextEf
             .Wishlists
             .AsNoTracking()
-            .Select(w => new WishlistDto(w.Id, w.Name))
+            .Select(w => new WishlistDto {  Id = w.Id, Name = w.Name })
+            .OrderBy(sortingParams)
             .ToPagedDataAsync(page, pageSize);
     }
 }

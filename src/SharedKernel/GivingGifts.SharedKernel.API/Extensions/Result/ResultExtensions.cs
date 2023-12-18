@@ -42,7 +42,7 @@ public static class ResultExtensions
         return resultStatusOptions.Handle(result, controller);
     }
 
-    public static ActionResult<T> ToCreatedAtRouteActionResult<T>(
+    public static ActionResult ToCreatedAtRouteActionResult<T>(
         this Result<T> result,
         ControllerBase controller,
         string? routeName,

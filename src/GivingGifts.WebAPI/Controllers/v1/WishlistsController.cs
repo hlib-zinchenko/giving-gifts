@@ -1,6 +1,7 @@
 using Ardalis.Result;
 using Asp.Versioning;
 using GivingGifts.SharedKernel.API.Extensions.Result;
+using GivingGifts.SharedKernel.Core;
 using GivingGifts.SharedKernel.Core.Constants;
 using GivingGifts.Wishlists.API.ApiModels.V1;
 using GivingGifts.Wishlists.API.ApiModels.V1.Mappers;
@@ -34,7 +35,8 @@ public class WishlistsController : ControllerBase
     {
         var result = await _mediator.Send(new WishlistsQuery(
             Paging.DefaultPage,
-            int.MaxValue));
+            int.MaxValue,
+            Array.Empty<SortingParameter>()));
         return result
             .Map(r => WishlistDtoMapper.ToApiDto(r.Data))
             .ToActionResult(this);

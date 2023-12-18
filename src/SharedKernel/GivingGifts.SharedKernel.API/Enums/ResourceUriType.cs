@@ -1,4 +1,4 @@
-namespace GivingGifts.SharedKernel.API.Models;
+namespace GivingGifts.SharedKernel.API.Enums;
 
 public enum ResourceUriType
 {

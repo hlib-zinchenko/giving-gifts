@@ -8,5 +8,6 @@ public interface IWishlistsQueryService
     Task<PagedData<WishlistDto>> UserWishlistsAsync(
         Guid userId,
         int page,
-        int pageSize);
+        int pageSize,
+        SortingParameter[] sortingParams);
 }

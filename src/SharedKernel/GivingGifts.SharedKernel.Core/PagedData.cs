@@ -22,10 +22,10 @@ public class PagedData<T>
         TotalCount = totalCount;
     }
 
-    public PagedData<TDestination> Map<TDestination>(Func<T, TDestination> mapAction)
+    public PagedData<TDestination> Map<TDestination>(Func<IEnumerable<T>, IEnumerable<TDestination>> mapAction)
     {
         return new PagedData<TDestination>(
-            Data.Select(mapAction),
+            mapAction(Data),
             CurrentPage,
             PageSize,
             TotalCount);

@@ -1,3 +1,4 @@
+using GivingGifts.SharedKernel.API.Resources.Mapping;
 using GivingGifts.SharedKernel.API.ResultStatusMapping;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +13,17 @@ public static class DependencyInjection
         var configuration = new SharedKernelApiConfiguration(ResultStatusMap.CreateDefault());
         configurationAction?.Invoke(configuration);
         services.AddScoped<ResultStatusMap>(_ => configuration.ResultStatusMap);
+        services.AddScoped<IResourceMapper, ResourceMapper>();
+        return services;
+    }
+
+    public static IServiceCollection AddMapping<TSource, TDestination>(
+        this IServiceCollection services, 
+        IResourceMappingProfile<TSource, TDestination> profile)
+    {
+        var mapper = profile.CreateMappingConfiguration().BuildMapper();
+        services.AddSingleton(mapper);
+
         return services;
     }
 
