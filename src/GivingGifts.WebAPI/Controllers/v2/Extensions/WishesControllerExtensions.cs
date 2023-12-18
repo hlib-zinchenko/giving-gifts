@@ -11,7 +11,7 @@ public static class WishesControllerExtensions
     public static string? GenerateGetListResourceUrl<T>(
         this WishesController wishlistsController,
         Guid wishlistId,
-        WishesRequest request,
+        WishesRequestBase requestBase,
         Result<PagedData<T>> result,
         ResourceUriType uriType)
     {
@@ -28,8 +28,8 @@ public static class WishesControllerExtensions
                 return result.Value.HasPrevious
                     ? wishlistsController.Url.Link(routeName, new
                     {
-                        Page = request.Page - 1,
-                        request.PageSize,
+                        Page = requestBase.Page - 1,
+                        requestBase.PageSize,
                         wishlistId,
                     })
                     : null;
@@ -39,8 +39,8 @@ public static class WishesControllerExtensions
                 return result.Value.HasNext
                     ? wishlistsController.Url.Link(routeName, new
                     {
-                        Page = request.Page + 1,
-                        request.PageSize,
+                        Page = requestBase.Page + 1,
+                        requestBase.PageSize,
                         wishlistId,
                     })
                     : null;

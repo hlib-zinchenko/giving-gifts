@@ -3,7 +3,7 @@ using GivingGifts.SharedKernel.Core.Constants;
 
 namespace GivingGifts.SharedKernel.API.Resources;
 
-public abstract class ResourcesRequest<TResource> :
+public abstract class ResourcesRequestBase<TResource> :
     IDataShapingRequest<TResource>,
     IPaginatingRequest,
     ISortingRequest<TResource>
@@ -13,7 +13,7 @@ public abstract class ResourcesRequest<TResource> :
     private readonly Lazy<IEnumerable<SortingRequestEntry>> _sortingParams;
     private readonly Lazy<IEnumerable<string>> _dataShapingFields;
 
-    protected ResourcesRequest()
+    protected ResourcesRequestBase()
     {
         _sortingParams = new Lazy<IEnumerable<SortingRequestEntry>>(() => StringsParser.ParseSortByString(OrderBy));
         _dataShapingFields = new Lazy<IEnumerable<string>>(() => StringsParser.ParseDataShapingString(Fields));

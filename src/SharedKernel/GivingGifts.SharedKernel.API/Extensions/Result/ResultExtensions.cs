@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Ardalis.Result;
+using GivingGifts.SharedKernel.API.Resources;
 using GivingGifts.SharedKernel.API.ResultStatusMapping;
 using GivingGifts.SharedKernel.Core;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,36 @@ namespace GivingGifts.SharedKernel.API.Extensions.Result;
 
 public static class ResultExtensions
 {
+    public static ActionResult ToActionResult<TResource>(
+        this Result<TResource> result,
+        ResourceRequestBase<TResource> request,
+        ControllerBase controller)
+    {
+        if (request.ShouldApplyShaping(out var shapeReadyFields))
+        {
+            return result
+                .Shape(shapeReadyFields)
+                .ToActionResult(controller);
+        }
+
+        return result.ToActionResult(controller);
+    }
+
+    public static ActionResult ToActionResult<TResource>(
+        this Result<IEnumerable<TResource>> result,
+        ResourceRequestBase<TResource> request,
+        ControllerBase controller)
+    {
+        if (request.ShouldApplyShaping(out var shapeReadyFields))
+        {
+            return result
+                .Shape(shapeReadyFields)
+                .ToActionResult(controller);
+        }
+
+        return result.ToActionResult(controller);
+    }
+
     public static ActionResult ToActionResult(
         this IResult result,
         ControllerBase controller)
@@ -32,16 +63,6 @@ public static class ResultExtensions
         return resultStatusOptions.Handle(result, controller, overrides);
     }
 
-    public static ActionResult<T> ToActionResult<T>(
-        this IResult result,
-        ControllerBase controller)
-    {
-        var resultStatusMap = controller.HttpContext.RequestServices.GetRequiredService<ResultStatusMap>();
-
-        var resultStatusOptions = resultStatusMap[result.Status];
-        return resultStatusOptions.Handle(result, controller);
-    }
-
     public static ActionResult ToCreatedAtRouteActionResult<T>(
         this Result<T> result,
         ControllerBase controller,
@@ -58,7 +79,25 @@ public static class ResultExtensions
         };
     }
 
-    public static ActionResult ToPagedActionResult<T>(
+    public static ActionResult ToPagedActionResult<TResource>(
+        this Result<PagedData<TResource>> result,
+        ControllerBase controller,
+        ResourcesRequestBase<TResource> requestBase,
+        string? previousPageLink,
+        string? nextPageLink)
+    {
+        if (requestBase.ShouldApplyShaping(out var shapeReadyFields))
+        {
+            return result
+                .Shape(shapeReadyFields)
+                .ToPagedActionResult(controller, previousPageLink, nextPageLink);
+        }
+
+        return result
+            .ToPagedActionResult(controller, previousPageLink, nextPageLink);
+    }
+
+    private static ActionResult ToPagedActionResult<T>(
         this Result<PagedData<T>> result,
         ControllerBase controller,
         string? previousPageLink,

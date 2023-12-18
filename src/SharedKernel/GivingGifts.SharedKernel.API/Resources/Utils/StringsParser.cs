@@ -6,7 +6,11 @@ internal static class StringsParser
 {
     public static IEnumerable<string> ParseDataShapingString(string? input) => string.IsNullOrWhiteSpace(input)
         ? Array.Empty<string>()
-        : input.Trim().Split(",").Select(s => s.Trim().ToLowerInvariant());
+        : input
+            .Trim()
+            .Split(",")
+            .Select(s => s.Trim().ToLowerInvariant())
+            .Distinct();
 
     public static IEnumerable<SortingRequestEntry> ParseSortByString(string? input)
     {

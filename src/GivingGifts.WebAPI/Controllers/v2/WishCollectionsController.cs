@@ -36,18 +36,18 @@ public class WishCollectionsController : ControllerBase
 
     [HttpGet("{wishIds}", Name = RouteNames.WishCollections.GetWishCollection)]
     [HttpHead]
-    [ValidateDataShaping]
+    [ValidateDataShaping<Wish>]
     public async Task<ActionResult> Get(
         [FromRoute] Guid wishlistId,
         [ModelBinder(BinderType = typeof(ArrayModelBinder))] [FromRoute]
         Guid[] wishIds,
-        [FromQuery] WishCollectionRequest request)
+        [FromQuery] WishCollectionRequestBase requestBase)
     {
         var query = new WishCollectionQuery(wishlistId, wishIds);
         var result = await _mediator.Send(query);
-        return result.Map(_resourceMapper.Map<WishDto, Wish>)
-            .Shape(request)
-            .ToActionResult(this);
+        return result
+            .Map(_resourceMapper.Map<WishDto, Wish>)
+            .ToActionResult(requestBase, this);
     }
 
     [HttpPost]
@@ -64,7 +64,8 @@ public class WishCollectionsController : ControllerBase
         var result = await _mediator.Send(command);
         var wishIdsAString = string.Join(",",
             result.Value?.Select(w => w.Id).ToArray() ?? Array.Empty<Guid>());
-        return result.Map(_resourceMapper.Map<WishDto, Wish>)
+        return result
+            .Map(_resourceMapper.Map<WishDto, Wish>)
             .ToCreatedAtRouteActionResult(
             this,
             RouteNames.WishCollections.GetWishCollection,

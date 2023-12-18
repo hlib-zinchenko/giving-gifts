@@ -42,41 +42,41 @@ public class WishesController : ControllerBase
 
     [HttpGet(Name = RouteNames.Wishes.GetWishesList)]
     [HttpHead]
-    [ValidateDataShaping]
+    [ValidateDataShaping<Wish>]
     [ValidateSorting<WishDto, Wish>]
-    public async Task<ActionResult<Wish[]>> GetList(
+    public async Task<ActionResult> GetList(
         [FromRoute] Guid wishlistId,
-        [FromQuery] WishesRequest request)
+        [FromQuery] WishesRequestBase requestBase)
     {
         var query = new WishesQuery(
             wishlistId,
-            request.Page,
-            request.PageSize,
-            _resourceMapper.GetSortingParameters<WishDto, Wish>(request));
+            requestBase.Page,
+            requestBase.PageSize,
+            _resourceMapper.GetSortingParameters<WishDto, Wish>(requestBase));
 
         var result = await _mediator.Send(query);
         return result
             .Map(pr => pr.Map(_resourceMapper.Map<WishDto, Wish>))
-            .Shape(request)
             .ToPagedActionResult(
                 this,
-                this.GenerateGetListResourceUrl(wishlistId, request, result, ResourceUriType.PreviousPage),
-                this.GenerateGetListResourceUrl(wishlistId, request, result, ResourceUriType.NextPage));
+                requestBase,
+                this.GenerateGetListResourceUrl(wishlistId, requestBase, result, ResourceUriType.PreviousPage),
+                this.GenerateGetListResourceUrl(wishlistId, requestBase, result, ResourceUriType.NextPage));
     }
 
     [Route("{wishId:guid}", Name = RouteNames.Wishes.GetWish)]
     [HttpGet]
     [HttpHead]
-    [ValidateDataShaping]
-    public async Task<ActionResult<Wish>> Get(
+    [ValidateDataShaping<Wish>]
+    public async Task<ActionResult> Get(
         Guid wishId,
         Guid wishlistId,
-        [FromQuery] WishRequest request)
+        [FromQuery] WishRequestBase requestBase)
     {
         var result = await _mediator.Send(new WishQuery(wishId, wishlistId));
-        return result.Map(_resourceMapper.Map<WishDto, Wish>)
-            .Shape(request)
-            .ToActionResult(this);
+        return result
+            .Map(_resourceMapper.Map<WishDto, Wish>)
+            .ToActionResult(requestBase,this);
     }
 
     [HttpPost]

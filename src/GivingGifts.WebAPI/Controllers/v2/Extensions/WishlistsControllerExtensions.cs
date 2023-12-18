@@ -10,7 +10,7 @@ public static class WishlistsControllerExtensions
 {
     public static string? GenerateGetListResourceUrl<T>(
         this WishlistsController wishlistsController,
-        WishlistsRequest request,
+        WishlistsRequestBase requestBase,
         Result<PagedData<T>> result,
         ResourceUriType uriType)
     {
@@ -26,8 +26,8 @@ public static class WishlistsControllerExtensions
                 return result.Value.HasPrevious
                     ? wishlistsController.Url.Link(RouteNames.Wishlists.GetWishlistList, new
                     {
-                        Page = request.Page - 1,
-                        request.PageSize,
+                        Page = requestBase.Page - 1,
+                        requestBase.PageSize,
                     })
                     : null;
             }
@@ -36,8 +36,8 @@ public static class WishlistsControllerExtensions
                 return result.Value.HasNext
                     ? wishlistsController.Url.Link(RouteNames.Wishlists.GetWishlistList, new
                     {
-                        Page = request.Page + 1,
-                        request.PageSize,
+                        Page = requestBase.Page + 1,
+                        requestBase.PageSize,
                     })
                     : null;
             }

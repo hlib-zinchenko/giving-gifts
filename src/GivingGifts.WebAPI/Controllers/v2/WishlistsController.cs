@@ -41,39 +41,38 @@ public class WishlistsController : ControllerBase
 
     [HttpGet(Name = RouteNames.Wishlists.GetWishlistList)]
     [HttpHead]
-    [ValidateDataShaping]
+    [ValidateDataShaping<Wishlist>]
     [ValidateSorting<WishlistDto, Wishlist>]
     public async Task<ActionResult> GetList(
-        [FromQuery] WishlistsRequest request)
+        [FromQuery] WishlistsRequestBase requestBase)
     {
         var query = new WishlistsQuery(
-            request.Page,
-            request.PageSize,
-            _resourceMapper.GetSortingParameters<WishlistDto, Wishlist>(request));
+            requestBase.Page,
+            requestBase.PageSize,
+            _resourceMapper.GetSortingParameters<WishlistDto, Wishlist>(requestBase));
         var result = await _mediator.Send(query);
 
         return result
             .Map(pr => pr.Map(_resourceMapper.Map<WishlistDto, Wishlist>))
-            .Shape(request)
             .ToPagedActionResult(
                 this,
-                this.GenerateGetListResourceUrl(request, result, ResourceUriType.PreviousPage),
-                this.GenerateGetListResourceUrl(request, result, ResourceUriType.NextPage));
+                requestBase,
+                this.GenerateGetListResourceUrl(requestBase, result, ResourceUriType.PreviousPage),
+                this.GenerateGetListResourceUrl(requestBase, result, ResourceUriType.NextPage));
     }
 
     [Route("{wishlistId:guid}", Name = RouteNames.Wishlists.GetWishlist)]
     [HttpGet]
     [HttpHead]
-    [ValidateDataShaping]
+    [ValidateDataShaping<WishlistWithWishes>]
     public async Task<ActionResult> Get(
         [FromRoute] Guid wishListId,
-        [FromQuery] WishlistRequest request)
+        [FromQuery] WishlistRequestBase requestBase)
     {
         var result = await _mediator.Send(new WishlistQuery(wishListId));
         return result
             .Map(WishlistWithWishesMapper.ToApiModel)
-            .Shape(request)
-            .ToActionResult(this);
+            .ToActionResult(requestBase, this);
     }
 
     [HttpPost]
@@ -82,7 +81,8 @@ public class WishlistsController : ControllerBase
         var result = await _mediator.Send(new CreateWishlistCommand(
             request.Name,
             CreateWishRequestMapper.ToCommandDto(request.Wishes)));
-        return result.Map(_resourceMapper.Map<WishlistDto, Wishlist>).ToCreatedAtRouteActionResult(
+        return result.Map(_resourceMapper.Map<WishlistDto, Wishlist>)
+            .ToCreatedAtRouteActionResult(
             this,
             RouteNames.Wishlists.GetWishlist,
             new { wishListId = result.Value?.Id });

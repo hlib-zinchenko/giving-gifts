@@ -8,14 +8,16 @@ namespace GivingGifts.SharedKernel.API.Extensions.Result;
 
 public static class ResultExtensionsDataShaping
 {
-    public static Result<ExpandoObject> Shape<T>(this Result<T> result, IDataShapingRequest request)
+    internal static Result<ExpandoObject> Shape<T>(
+        this Result<T> result,
+        PropertyInfo[] propertiesToReturn)
     {
-        var propertiesToReturn = GetPropertiesToReturn<T>(request);
         return result.Map(resultData =>
         {
             var mappedResult = new ExpandoObject();
-            foreach (var propertyInfo in propertiesToReturn)
+            for (var index = 0; index < propertiesToReturn.Length; index++)
             {
+                var propertyInfo = propertiesToReturn[index];
                 (mappedResult as IDictionary<string, object?>)[propertyInfo.Name]
                     = propertyInfo.GetValue(resultData);
             }
@@ -24,17 +26,18 @@ public static class ResultExtensionsDataShaping
         });
     }
 
-    public static Result<ExpandoObject[]> Shape<T>(this Result<T[]> result, IDataShapingRequest request)
+    internal static Result<ExpandoObject[]> Shape<T>(
+        this Result<IEnumerable<T>> result,
+        PropertyInfo[] propertiesToReturn)
     {
-        var propertiesToReturn = GetPropertiesToReturn<T>(request);
-
         return result.Map(resultData =>
         {
             return resultData.Aggregate(new List<ExpandoObject>(), (accumulator, dataItem) =>
             {
                 var mappedResult = new ExpandoObject();
-                foreach (var propertyInfo in propertiesToReturn)
+                for (var index = 0; index < propertiesToReturn.Length; index++)
                 {
+                    var propertyInfo = propertiesToReturn[index];
                     (mappedResult as IDictionary<string, object?>)[propertyInfo.Name]
                         = propertyInfo.GetValue(dataItem);
                 }
@@ -45,18 +48,19 @@ public static class ResultExtensionsDataShaping
         });
     }
 
-    public static Result<PagedData<ExpandoObject>> Shape<T>(this Result<PagedData<T>> result,
-        IDataShapingRequest request)
+    internal static Result<PagedData<ExpandoObject>> Shape<T>(
+        this Result<PagedData<T>> result,
+        PropertyInfo[] propertiesToReturn)
     {
-        var propertiesToReturn = GetPropertiesToReturn<T>(request);
         return result.Map(pagedData =>
         {
             return pagedData.Map(data => data.Select(dataItem =>
             {
                 {
                     var mappedResult = new ExpandoObject();
-                    foreach (var propertyInfo in propertiesToReturn)
+                    for (var index = 0; index < propertiesToReturn.Length; index++)
                     {
+                        var propertyInfo = propertiesToReturn[index];
                         (mappedResult as IDictionary<string, object?>)[propertyInfo.Name]
                             = propertyInfo.GetValue(dataItem);
                     }
@@ -65,18 +69,5 @@ public static class ResultExtensionsDataShaping
                 }
             }));
         });
-    }
-
-    private static IEnumerable<PropertyInfo> GetPropertiesToReturn<T>(IDataShapingRequest request)
-    {
-        var properties = typeof(T)
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        var requestedFields = request.GetDataShapingFields().ToArray();
-        var propertiesToReturn = requestedFields.Length == 0
-            ? properties
-            : properties.Where(p =>
-                requestedFields.Any(rf => rf
-                    .Equals(p.Name, StringComparison.InvariantCultureIgnoreCase)));
-        return propertiesToReturn;
     }
 }

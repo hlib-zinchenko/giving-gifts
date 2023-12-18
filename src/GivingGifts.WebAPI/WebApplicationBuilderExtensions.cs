@@ -4,7 +4,6 @@ using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Asp.Versioning.Conventions;
 using GivingGifts.SharedKernel.API;
-using GivingGifts.SharedKernel.API.Resources.FilterAttributes;
 using GivingGifts.SharedKernel.Core;
 using GivingGifts.SharedKernel.Core.Extensions;
 using GivingGifts.Users.Infrastructure;
@@ -140,8 +139,6 @@ public static class WebApplicationBuilderExtensions
             });
         services.ConfigureOptions<NamedSwaggerGenOptions>();
 
-        services.AddScoped<ValidateDataShapingAttribute>();
-        
         return builder.Build();
     }
 
