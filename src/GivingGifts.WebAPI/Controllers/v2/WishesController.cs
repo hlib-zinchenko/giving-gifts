@@ -53,6 +53,7 @@ public class WishesController : ControllerBase
             request.Page,
             request.PageSize,
             _resourceMapper.GetSortingParameters<WishDto, Wish>(request));
+
         var result = await _mediator.Send(query);
         return result
             .Map(pr => pr.Map(_resourceMapper.Map<WishDto, Wish>))
@@ -117,13 +118,15 @@ public class WishesController : ControllerBase
         Guid wishlistId,
         Guid wishId)
     {
-        var wish = await _mediator.Send(new WishQuery(wishId, wishlistId));
-        if (wish.Status != ResultStatus.Ok)
+        var wishQueryResult = await _mediator.Send(new WishQuery(wishId, wishlistId));
+        if (wishQueryResult.Status != ResultStatus.Ok)
         {
-            return wish.Map(_resourceMapper.Map<WishDto, Wish>).ToActionResult(this);
+            return wishQueryResult
+                .Map(_resourceMapper.Map<WishDto, Wish>)
+                .ToActionResult(this);
         }
 
-        var updateWishDto = WishDtoMapper.ToUpdateWishRequest(wish.Value);
+        var updateWishDto = WishDtoMapper.ToUpdateWishRequest(wishQueryResult.Value);
         request.ApplyTo(updateWishDto);
         var result = await _mediator.Send(new UpdateWishCommand(
             wishlistId, wishId, updateWishDto.Name!, updateWishDto.Url, updateWishDto.Notes));
@@ -133,12 +136,18 @@ public class WishesController : ControllerBase
     [HttpOptions]
     public ActionResult Options()
     {
-        return this.OptionsActionResult("GET", "HEAD", "POST");
+        return this.OptionsActionResult(
+            HttpMethod.Get, HttpMethod.Head, HttpMethod.Post);
     }
 
     [HttpOptions("{wishId:guid}")]
     public ActionResult OptionsConcrete()
     {
-        return this.OptionsActionResult("GET", "HEAD", "DELETE", "PUT", "PATCH");
+        return this.OptionsActionResult(
+            HttpMethod.Get,
+            HttpMethod.Head,
+            HttpMethod.Delete,
+            HttpMethod.Put,
+            HttpMethod.Patch);
     }
 }

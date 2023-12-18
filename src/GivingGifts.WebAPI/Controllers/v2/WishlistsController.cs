@@ -105,12 +105,14 @@ public class WishlistsController : ControllerBase
     [HttpOptions]
     public ActionResult Options()
     {
-        return this.OptionsActionResult("GET", "HEAD", "POST");
+        return this.OptionsActionResult(
+            HttpMethod.Get, HttpMethod.Head, HttpMethod.Post);
     }
 
     [HttpOptions("{wishlistId:guid}")]
     public ActionResult OptionsConcrete()
     {
-        return this.OptionsActionResult("GET", "HEAD", "DELETE", "PUT");
+        return this.OptionsActionResult(
+            HttpMethod.Get, HttpMethod.Head, HttpMethod.Delete, HttpMethod.Put);
     }
 }

@@ -74,12 +74,12 @@ public class WishCollectionsController : ControllerBase
     [HttpOptions]
     public ActionResult Options()
     {
-        return this.OptionsActionResult("POST");
+        return this.OptionsActionResult(HttpMethod.Post);
     }
 
     [HttpOptions("{wishIds}")]
     public ActionResult OptionsConcrete()
     {
-        return this.OptionsActionResult("GET", "HEAD");
+        return this.OptionsActionResult(HttpMethod.Get, HttpMethod.Head);
     }
 }

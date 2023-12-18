@@ -25,12 +25,6 @@ public class AuthController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpOptions]
-    public ActionResult Options()
-    {
-        return this.OptionsActionResult("POST");
-    }
-
     [HttpPost("login")]
     [ResultMappingOverride(ResultStatus.Ok, HttpStatusCode.OK)]
     public async Task<ActionResult<AuthTokens>> Login([FromBody] LoginRequest request)
@@ -44,9 +38,19 @@ public class AuthController : ControllerBase
     [ResultMappingOverride(ResultStatus.Ok, HttpStatusCode.OK)]
     public async Task<ActionResult<AuthTokens>> Register([FromBody] RegisterRequest request)
     {
-        var result = await _mediator.Send(
-            new RegisterUserCommand(request.FirstName, request.LastName, request.Email, request.Password));
+        var command = new RegisterUserCommand(
+            request.FirstName,
+            request.LastName,
+            request.Email,
+            request.Password);
+        var result = await _mediator.Send(command);
         return result.Map(AuthTokensDtoMapper.ToApiModel)
             .ToActionResult(this);
+    }
+
+    [HttpOptions]
+    public ActionResult Options()
+    {
+        return this.OptionsActionResult(HttpMethod.Post);
     }
 }

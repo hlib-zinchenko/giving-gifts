@@ -5,9 +5,9 @@ namespace GivingGifts.Users.UseCases.Register;
 
 public class RegisterUserCommand : IRequest<Result<AuthTokensDto>>
 {
-    public RegisterUserCommand(string? firsName, string? lastName, string? email, string? password)
+    public RegisterUserCommand(string? firstName, string? lastName, string? email, string? password)
     {
-        FirsName = firsName!;
+        FirsName = firstName!;
         LastName = lastName!;
         Email = email!;
         Password = password!;

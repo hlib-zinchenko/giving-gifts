@@ -5,13 +5,13 @@ namespace GivingGifts.SharedKernel.API.Extensions;
 
 public static class BaseControllerExtensions
 {
-    private static readonly string[] OptionsMethod = { "OPTIONS" };
+    private static readonly string[] OptionsMethod = { HttpMethod.Options.Method };
 
     public static ActionResult OptionsActionResult(
         this ControllerBase controller,
-        params string[] allowedMethods)
+        params HttpMethod[] allowedMethods)
     {
-        var methods = OptionsMethod.Union(allowedMethods).Distinct();
+        var methods = OptionsMethod.Union(allowedMethods.Select(m => m.Method)).Distinct();
         controller.Response.Headers.Append("Allow", string.Join(", ", methods));
         return controller.Ok();
     }
