@@ -1,4 +1,6 @@
 using GivingGifts.SharedKernel.API.Resources.Mapping;
+using GivingGifts.SharedKernel.API.Resources.RequestValidation;
+using GivingGifts.SharedKernel.API.Resources.RequestValidation.Validators;
 using GivingGifts.SharedKernel.API.ResultStatusMapping;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,8 +14,9 @@ public static class DependencyInjection
     {
         var configuration = new SharedKernelApiConfiguration(ResultStatusMap.CreateDefault());
         configurationAction?.Invoke(configuration);
-        services.AddScoped<ResultStatusMap>(_ => configuration.ResultStatusMap);
-        services.AddScoped<IResourceMapper, ResourceMapper>();
+        services.AddScoped<ResultStatusMap>(_ => configuration.ResultStatusMap)
+            .AddScoped<IResourceMapper, ResourceMapper>()
+            .AddRequestValidation();
         return services;
     }
 
@@ -23,6 +26,16 @@ public static class DependencyInjection
     {
         var mapper = profile.CreateMappingConfiguration().BuildMapper();
         services.AddSingleton(mapper);
+
+        return services;
+    }
+
+    private static IServiceCollection AddRequestValidation(this IServiceCollection services)
+    {
+        services.AddScoped<IResourcesRequestValidator, ResourcesRequestValidator>();
+        services.AddScoped<IResourceRequestValidator, ResourceRequestValidator>();
+        services.AddScoped<IDataShapingRequestValidator, DataShapingRequestValidator>();
+        services.AddScoped<ISortingRequestValidator, SortingRequestValidator>();
 
         return services;
     }

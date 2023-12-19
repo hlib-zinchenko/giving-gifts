@@ -42,8 +42,7 @@ public class WishesController : ControllerBase
 
     [HttpGet(Name = RouteNames.Wishes.GetWishesList)]
     [HttpHead]
-    [ValidateDataShaping<Wish>]
-    [ValidateSorting<WishDto, Wish>]
+    [ValidateResourcesRequest<WishDto, Wish>]
     public async Task<ActionResult> GetList(
         [FromRoute] Guid wishlistId,
         [FromQuery] WishesRequestBase requestBase)
@@ -57,7 +56,7 @@ public class WishesController : ControllerBase
         var result = await _mediator.Send(query);
         return result
             .Map(pr => pr.Map(_resourceMapper.Map<WishDto, Wish>))
-            .ToPagedActionResult(
+            .ToPagedActionResult<WishDto, Wish>(
                 this,
                 requestBase,
                 this.GenerateGetListResourceUrl(wishlistId, requestBase, result, ResourceUriType.PreviousPage),
@@ -67,7 +66,7 @@ public class WishesController : ControllerBase
     [Route("{wishId:guid}", Name = RouteNames.Wishes.GetWish)]
     [HttpGet]
     [HttpHead]
-    [ValidateDataShaping<Wish>]
+    [ValidateResourceRequest<Wish>]
     public async Task<ActionResult> Get(
         Guid wishId,
         Guid wishlistId,

@@ -19,7 +19,7 @@ public class ResourceMappingConfiguration<TSource, TDestination>
         var sortingConfiguration = new PropertySortingConfiguration<TSource>();
         sortingConfigurationAction.Invoke(sortingConfiguration);
 
-        _sortings[((MemberExpression)destinationProperty.Body).Member.Name]
+        _sortings[((MemberExpression)destinationProperty.Body).Member.Name.ToLowerInvariant()]
             = sortingConfiguration.GetSortablePropertyInfos().ToList();
         return CreateMapInternal(source, destinationProperty);
     }

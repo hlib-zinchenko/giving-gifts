@@ -34,6 +34,12 @@ public class ResourceMapper : IResourceMapper
         return configuredSortings.ToArray();
     }
 
+    public string[] GetConfiguredSortableFields<TSource, TDestination>()
+    {
+        var mapper = GetMapper<TSource, TDestination>();
+        return mapper.GetConfiguredSortableFields();
+    }
+
     private DedicatedResourceMapper<TSource, TDestination> GetMapper<TSource, TDestination>()
     {
         var key = (typeof(TSource), typeof(TDestination));

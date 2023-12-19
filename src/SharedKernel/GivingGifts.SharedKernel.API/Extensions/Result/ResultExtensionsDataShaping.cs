@@ -1,7 +1,6 @@
 ﻿using System.Dynamic;
 using System.Reflection;
 using Ardalis.Result;
-using GivingGifts.SharedKernel.API.Resources;
 using GivingGifts.SharedKernel.Core;
 
 namespace GivingGifts.SharedKernel.API.Extensions.Result;

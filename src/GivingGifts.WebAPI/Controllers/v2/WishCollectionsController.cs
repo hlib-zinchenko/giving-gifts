@@ -36,7 +36,7 @@ public class WishCollectionsController : ControllerBase
 
     [HttpGet("{wishIds}", Name = RouteNames.WishCollections.GetWishCollection)]
     [HttpHead]
-    [ValidateDataShaping<Wish>]
+    [ValidateResourceRequest<Wish>]
     public async Task<ActionResult> Get(
         [FromRoute] Guid wishlistId,
         [ModelBinder(BinderType = typeof(ArrayModelBinder))] [FromRoute]

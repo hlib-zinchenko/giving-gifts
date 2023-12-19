@@ -1,10 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
-using Ardalis.Result;
+﻿using Ardalis.Result;
+using GivingGifts.SharedKernel.API.Models;
 using GivingGifts.SharedKernel.API.Resources;
+using GivingGifts.SharedKernel.API.Resources.RequestValidation;
 using GivingGifts.SharedKernel.API.ResultStatusMapping;
 using GivingGifts.SharedKernel.Core;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using IResult = Ardalis.Result.IResult;
@@ -18,14 +17,17 @@ public static class ResultExtensions
         ResourceRequestBase<TResource> request,
         ControllerBase controller)
     {
-        if (request.ShouldApplyShaping(out var shapeReadyFields))
+        var shapingRequestValidator = controller.HttpContext.RequestServices
+            .GetRequiredService<IDataShapingRequestValidator>();
+        var shapableFields = shapingRequestValidator.GetValidToRequestFields<TResource>();
+        if (shapingRequestValidator.ShouldApplyShaping(request, out var shapeReadyFields))
         {
             return result
                 .Shape(shapeReadyFields)
-                .ToActionResult(controller);
+                .ToActionResult(controller, shapableFields);
         }
 
-        return result.ToActionResult(controller);
+        return result.ToActionResult(controller, shapableFields);
     }
 
     public static ActionResult ToActionResult<TResource>(
@@ -33,19 +35,23 @@ public static class ResultExtensions
         ResourceRequestBase<TResource> request,
         ControllerBase controller)
     {
-        if (request.ShouldApplyShaping(out var shapeReadyFields))
+        var shapingRequestValidator = controller.HttpContext.RequestServices
+            .GetRequiredService<IDataShapingRequestValidator>();
+        var shapableFields = shapingRequestValidator.GetValidToRequestFields<TResource>();
+        if (shapingRequestValidator.ShouldApplyShaping(request, out var shapeReadyFields))
         {
             return result
                 .Shape(shapeReadyFields)
-                .ToActionResult(controller);
+                .ToActionResult(controller, shapableFields);
         }
 
-        return result.ToActionResult(controller);
+        return result.ToActionResult(controller, shapableFields);
     }
 
     public static ActionResult ToActionResult(
         this IResult result,
-        ControllerBase controller)
+        ControllerBase controller,
+        string[]? shapableFields = null)
     {
         var resultStatusMap = controller.HttpContext.RequestServices.GetRequiredService<ResultStatusMap>();
 
@@ -58,6 +64,8 @@ public static class ResultExtensions
             .ToDictionary(
                 a => a.ResultStatus,
                 a => a.HttpStatusCode);
+
+        controller.AddShapableFieldsHeader(shapableFields);
 
         var resultStatusOptions = resultStatusMap[result.Status];
         return resultStatusOptions.Handle(result, controller, overrides);
@@ -79,29 +87,48 @@ public static class ResultExtensions
         };
     }
 
-    public static ActionResult ToPagedActionResult<TResource>(
+    public static ActionResult ToPagedActionResult<TDto, TResource>(
         this Result<PagedData<TResource>> result,
         ControllerBase controller,
-        ResourcesRequestBase<TResource> requestBase,
+        ResourcesRequestBase<TResource> request,
         string? previousPageLink,
         string? nextPageLink)
     {
-        if (requestBase.ShouldApplyShaping(out var shapeReadyFields))
+        var sortingRequestValidator = controller.HttpContext.RequestServices
+            .GetRequiredService<ISortingRequestValidator>();
+        var sortableFields = sortingRequestValidator.GetValidToRequestFields<TResource, TDto>(request);
+        
+        var shapingRequestValidator = controller.HttpContext.RequestServices
+            .GetRequiredService<IDataShapingRequestValidator>();
+        var shapableFields = shapingRequestValidator.GetValidToRequestFields<TResource>();
+        if (shapingRequestValidator.ShouldApplyShaping(request, out var shapeReadyFields))
         {
             return result
                 .Shape(shapeReadyFields)
-                .ToPagedActionResult(controller, previousPageLink, nextPageLink);
+                .ToPagedActionResult(
+                    controller,
+                    previousPageLink,
+                    nextPageLink,
+                    shapableFields,
+                    sortableFields);
         }
 
         return result
-            .ToPagedActionResult(controller, previousPageLink, nextPageLink);
+            .ToPagedActionResult(
+                controller,
+                previousPageLink,
+                nextPageLink,
+                shapableFields,
+                sortableFields);
     }
 
     private static ActionResult ToPagedActionResult<T>(
         this Result<PagedData<T>> result,
         ControllerBase controller,
         string? previousPageLink,
-        string? nextPageLink)
+        string? nextPageLink,
+        string[] shapableFields,
+        string[] sortableFields)
     {
         var resultStatusMap = controller.HttpContext.RequestServices.GetRequiredService<ResultStatusMap>();
 
@@ -112,7 +139,7 @@ public static class ResultExtensions
             return resultStatusOptions.Handle(result, controller);
         }
 
-        var pagedInfo = new PagedInfo(
+        var pagingMetadata = new PagingMetadata(
             result.Value.CurrentPage,
             result.Value.TotalCount,
             result.Value.PageSize,
@@ -120,25 +147,10 @@ public static class ResultExtensions
             previousPageLink,
             nextPageLink);
 
-        controller.Response.Headers.Append(
-            "X-PagedData", JsonSerializer.Serialize(pagedInfo));
-        return controller.Ok(result.Value.Data);
-    }
-
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    private class PagedInfo(
-        int currentPage,
-        int totalCount,
-        int pageSize,
-        int totalPages,
-        string? previousPageLink = null,
-        string? nextPageLink = null)
-    {
-        public int CurrentPage { get; } = currentPage;
-        public int TotalCount { get; } = totalCount;
-        public int PageSize { get; } = pageSize;
-        public int TotalPages { get; } = totalPages;
-        public string? PreviousPageLink { get; } = previousPageLink;
-        public string? NextPageLink { get; } = nextPageLink;
+        return controller
+            .AddShapableFieldsHeader(shapableFields)
+            .AddSortableFieldsHeader(sortableFields)
+            .AddPagedDataHeader(pagingMetadata)
+            .Ok(result.Value.Data);
     }
 }

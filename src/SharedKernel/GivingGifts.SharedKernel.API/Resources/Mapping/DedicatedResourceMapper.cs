@@ -38,13 +38,8 @@ public class DedicatedResourceMapper<TSource, TDestination> : ISortingParameters
         return result;
     }
 
-    public bool ValidateRequestEntries(
-        ISortingRequest<TDestination> sortingRequest,
-        out SortingRequestEntry[] invalidEntries)
+    public string[] GetConfiguredSortableFields()
     {
-        invalidEntries = sortingRequest.GetSortingEntries()
-            .Where(sp =>
-                !_sortingConfigurations.ContainsKey(sp.SortBy)).ToArray();
-        return invalidEntries.Length == 0;
+        return _sortingConfigurations.Keys.ToArray();
     }
 }
