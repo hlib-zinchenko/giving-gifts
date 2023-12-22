@@ -34,7 +34,7 @@ public static class QueryableExtensions
                 StringComparison.OrdinalIgnoreCase)))
             .ToArray();
 
-        var sorting = sortingParams.Select((sp) =>
+        var sorting = sortingParams.Select(sp =>
                 new
                 {
                     sp.SortDirection,

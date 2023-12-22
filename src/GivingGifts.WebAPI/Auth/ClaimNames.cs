@@ -14,5 +14,4 @@ public static class ClaimNames
     public const string LastName = "LastName";
     public const string Jti = JwtRegisteredClaimNames.Jti;
     public const string Role = ClaimTypes.Role;
-    public const string CompanySettings = "CompanySettings";
 }

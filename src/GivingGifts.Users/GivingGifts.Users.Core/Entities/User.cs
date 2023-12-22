@@ -7,8 +7,9 @@ namespace GivingGifts.Users.Core.Entities;
 
 public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAggregationRoot
 {
-    private readonly List<DomainEventBase> _events = new();
+    private readonly List<DomainEventBase> _events = [];
 
+    // ReSharper disable once UnusedMember.Local
     private User()
     {
     }
@@ -25,7 +26,7 @@ public sealed class User : IdentityUser<Guid>, IEntity<Guid>, IAggregationRoot
 
     public string FirstName { get; } = null!;
     public string LastName { get; } = null!;
-    public List<UserRole> UserRoles { get; } = new();
+    public List<UserRole> UserRoles { get; } = [];
     [NotMapped] public IReadOnlyCollection<DomainEventBase> Events => _events.AsReadOnly();
     public void ClearEvents()
     {

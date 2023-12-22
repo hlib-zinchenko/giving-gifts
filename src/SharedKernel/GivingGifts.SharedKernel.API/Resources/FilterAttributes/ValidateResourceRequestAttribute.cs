@@ -1,6 +1,5 @@
 using System.Net;
 using GivingGifts.SharedKernel.API.Extensions;
-using GivingGifts.SharedKernel.API.Resources.Mapping;
 using GivingGifts.SharedKernel.API.Resources.RequestValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

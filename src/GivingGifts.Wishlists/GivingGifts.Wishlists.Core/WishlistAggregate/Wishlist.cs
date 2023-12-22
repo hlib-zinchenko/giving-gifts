@@ -1,14 +1,15 @@
 using Ardalis.GuardClauses;
 using GivingGifts.SharedKernel.Core;
+using GivingGifts.Wishlists.Core.WishlistAggregate.DomainEvents;
 using GivingGifts.Wishlists.Core.WishlistAggregate.Entities;
-using GivingGifts.Wishlists.Core.WishlistAggregate.Events;
 
 namespace GivingGifts.Wishlists.Core.WishlistAggregate;
 
 public class Wishlist : EntityBase<Guid>, IAggregationRoot
 {
-    private readonly List<Wish> _wishes = new();
+    private readonly List<Wish> _wishes = [];
 
+    // ReSharper disable once UnusedMember.Local
     private Wishlist()
     {
     }

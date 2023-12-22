@@ -1,3 +1,4 @@
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace GivingGifts.Wishlists.API.ApiModels.V1;
 
 public class WishlistDto

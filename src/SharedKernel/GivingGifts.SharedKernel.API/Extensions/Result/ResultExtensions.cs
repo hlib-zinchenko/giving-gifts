@@ -96,7 +96,7 @@ public static class ResultExtensions
     {
         var sortingRequestValidator = controller.HttpContext.RequestServices
             .GetRequiredService<ISortingRequestValidator>();
-        var sortableFields = sortingRequestValidator.GetValidToRequestFields<TResource, TDto>(request);
+        var sortableFields = sortingRequestValidator.GetValidToRequestFields<TResource, TDto>();
         
         var shapingRequestValidator = controller.HttpContext.RequestServices
             .GetRequiredService<IDataShapingRequestValidator>();

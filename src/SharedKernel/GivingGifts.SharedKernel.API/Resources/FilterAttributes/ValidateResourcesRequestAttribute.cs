@@ -1,6 +1,5 @@
 using System.Net;
 using GivingGifts.SharedKernel.API.Extensions;
-using GivingGifts.SharedKernel.API.Resources.Mapping;
 using GivingGifts.SharedKernel.API.Resources.RequestValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -45,8 +44,9 @@ public class ValidateResourcesRequestAttribute<TDto, TResource> : ActionFilterAt
                     validationError.Value);
             }
 
-            controller.AddShapableFieldsHeader(
-                validationResult.DataShapingRequestValidationResult.ValidToRequestProperties)
+            controller
+                .AddShapableFieldsHeader(
+                    validationResult.DataShapingRequestValidationResult.ValidToRequestProperties)
                 .AddSortableFieldsHeader(
                     validationResult.SortingRequestValidationResult.ValidToRequestProperties);
             context.Result = controller.StatusCode(

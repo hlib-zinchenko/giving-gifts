@@ -5,7 +5,7 @@ namespace GivingGifts.Wishlists.UseCases.GetWishlists;
 
 public interface IWishlistsQueryService
 {
-    Task<PagedData<WishlistDto>> UserWishlistsAsync(
+    Task<PagedData<WishlistDto>> GetUserWishlistsAsync(
         Guid userId,
         int page,
         int pageSize,

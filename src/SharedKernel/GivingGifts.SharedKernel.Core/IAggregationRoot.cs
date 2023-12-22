@@ -1,5 +1,3 @@
 namespace GivingGifts.SharedKernel.Core;
 
-public interface IAggregationRoot
-{
-}
+public interface IAggregationRoot;

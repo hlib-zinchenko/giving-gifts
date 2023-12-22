@@ -9,7 +9,7 @@ public class DedicatedResourceMapper<TSource, TDestination> : ISortingParameters
 
     public DedicatedResourceMapper(
         Func<TSource, TDestination> mapFunction,
-        Dictionary<string, List<SortablePropertyInfo>> sortings)
+        IReadOnlyDictionary<string, List<SortablePropertyInfo>> sortings)
     {
         _mapFunction = mapFunction;
         _sortingConfigurations = sortings;

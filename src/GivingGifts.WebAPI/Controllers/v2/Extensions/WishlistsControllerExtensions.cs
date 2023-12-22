@@ -19,30 +19,17 @@ public static class WishlistsControllerExtensions
             return null;
         }
 
-        switch (uriType)
+        return uriType switch
         {
-            case ResourceUriType.PreviousPage:
-            {
-                return result.Value.HasPrevious
-                    ? wishlistsController.Url.Link(RouteNames.Wishlists.GetWishlistList, new
-                    {
-                        Page = requestBase.Page - 1,
-                        requestBase.PageSize,
-                    })
-                    : null;
-            }
-            case ResourceUriType.NextPage:
-            {
-                return result.Value.HasNext
-                    ? wishlistsController.Url.Link(RouteNames.Wishlists.GetWishlistList, new
-                    {
-                        Page = requestBase.Page + 1,
-                        requestBase.PageSize,
-                    })
-                    : null;
-            }
-            default:
-                throw new ArgumentOutOfRangeException(nameof(uriType), uriType, null);
-        }
+            ResourceUriType.PreviousPage => result.Value.HasPrevious
+                ? wishlistsController.Url.Link(RouteNames.Wishlists.GetWishlistList,
+                    new { Page = requestBase.Page - 1, requestBase.PageSize, })
+                : null,
+            ResourceUriType.NextPage => result.Value.HasNext
+                ? wishlistsController.Url.Link(RouteNames.Wishlists.GetWishlistList,
+                    new { Page = requestBase.Page + 1, requestBase.PageSize, })
+                : null,
+            _ => throw new ArgumentOutOfRangeException(nameof(uriType), uriType, null)
+        };
     }
 }

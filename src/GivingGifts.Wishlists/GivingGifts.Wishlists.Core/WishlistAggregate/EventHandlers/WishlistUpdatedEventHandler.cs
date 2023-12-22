@@ -1,9 +1,10 @@
-using GivingGifts.Wishlists.Core.WishlistAggregate.Events;
+using GivingGifts.Wishlists.Core.WishlistAggregate.DomainEvents;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace GivingGifts.Wishlists.Core.WishlistAggregate.Handlers;
+namespace GivingGifts.Wishlists.Core.WishlistAggregate.EventHandlers;
 
+// ReSharper disable once UnusedType.Global
 public class WishlistUpdatedEventHandler : INotificationHandler<WishlistUpdatedEvent>
 {
     private readonly ILogger<WishlistUpdatedEventHandler> _logger;

@@ -1,3 +1,4 @@
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace GivingGifts.Users.API.ApiModels;
 
 public class RegisterRequest

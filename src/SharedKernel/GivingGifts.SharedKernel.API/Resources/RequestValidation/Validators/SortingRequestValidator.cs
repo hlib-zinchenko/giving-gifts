@@ -32,7 +32,7 @@ public class SortingRequestValidator : ISortingRequestValidator
             invalidEntries.Select(e => e.SortBy).ToArray());
     }
 
-    public string[] GetValidToRequestFields<TResource, TDto>(IDataShapingRequest<TResource> request)
+    public string[] GetValidToRequestFields<TResource, TDto>()
     {
         return _resourceMapper.GetConfiguredSortableFields<TDto, TResource>();
     }

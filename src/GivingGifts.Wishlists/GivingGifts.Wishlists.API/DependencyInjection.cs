@@ -8,8 +8,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddWishlistsApi(this IServiceCollection services)
     {
-        services.AddMapping(new WishlistDtoToWishlistProfile());
-        services.AddMapping(new WishDtoToWishProfile());
-        return services;
+        return services
+            .AddMapping(new WishlistDtoToWishlistProfile())
+            .AddMapping(new WishDtoToWishProfile());
     }
 }

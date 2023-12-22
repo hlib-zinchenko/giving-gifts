@@ -22,7 +22,7 @@ public class WishlistsQueryHandler : IRequestHandler<WishlistsQuery, Result<Page
         CancellationToken cancellationToken)
     {
         var result = await _wishlistsQueryService
-            .UserWishlistsAsync(_userContext.UserId, request.Page, request.PageSize, request.SortingsParams);
+            .GetUserWishlistsAsync(_userContext.UserId, request.Page, request.PageSize, request.SortingsParams);
         return Result<PagedData<WishlistDto>>.Success(result);
     }
 }

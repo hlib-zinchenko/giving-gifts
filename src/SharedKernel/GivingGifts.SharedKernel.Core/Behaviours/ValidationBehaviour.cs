@@ -36,7 +36,7 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
         }
 
         var responseType = typeof(TResponse);
-        if ((responseType.IsGenericType && responseType.GetGenericTypeDefinition() != typeof(Result<>)) &&
+        if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() != typeof(Result<>) &&
             responseType != typeof(Result))
         {
             throw new ValidationException(invalidValidationResults

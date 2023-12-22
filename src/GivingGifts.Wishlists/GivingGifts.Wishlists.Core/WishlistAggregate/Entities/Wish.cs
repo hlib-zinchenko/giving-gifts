@@ -5,6 +5,7 @@ namespace GivingGifts.Wishlists.Core.WishlistAggregate.Entities;
 
 public class Wish : EntityBase<Guid>
 {
+    // ReSharper disable once UnusedMember.Local
     private Wish()
     {
     }

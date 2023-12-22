@@ -6,6 +6,7 @@ public sealed class Role : IdentityRole<Guid>
 {
     public ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
 
+    // ReSharper disable once UnusedMember.Local
     private Role()
     {
         

@@ -66,7 +66,7 @@ public static class WebApplicationBuilderExtensions
                             Id = "Bearer"
                         }
                     },
-                    new string[] { }
+                    Array.Empty<string>()
                 }
             });
         });

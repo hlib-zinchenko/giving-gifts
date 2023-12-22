@@ -6,6 +6,8 @@ namespace GivingGifts.SharedKernel.API.ModelBinders;
 
 public class ArrayModelBinder : IModelBinder
 {
+    private const string Separator = ",";
+
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
         // Our binder works only on enumerable types
@@ -40,7 +42,7 @@ public class ArrayModelBinder : IModelBinder
         var converter = TypeDescriptor.GetConverter(elementType);
 
         // Convert each item in the value list to the enumerable type
-        var values = value.Split(new[] { "," },
+        var values = value.Split(Separator,
                 StringSplitOptions.RemoveEmptyEntries)
             .Select(x => converter.ConvertFromString(x.Trim()))
             .ToArray();

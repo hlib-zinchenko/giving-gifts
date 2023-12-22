@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 namespace GivingGifts.Users.Infrastructure.JWT;
 

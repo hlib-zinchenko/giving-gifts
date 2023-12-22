@@ -1,3 +1,4 @@
+// ReSharper disable NotAccessedPositionalProperty.Global
 namespace GivingGifts.SharedKernel.API.Models;
 
 public record PagingMetadata(

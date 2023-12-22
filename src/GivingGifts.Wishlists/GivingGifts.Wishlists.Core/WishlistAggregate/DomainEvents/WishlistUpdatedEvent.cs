@@ -1,6 +1,6 @@
 using GivingGifts.SharedKernel.Core;
 
-namespace GivingGifts.Wishlists.Core.WishlistAggregate.Events;
+namespace GivingGifts.Wishlists.Core.WishlistAggregate.DomainEvents;
 
 public class WishlistUpdatedEvent(
     IDateTimeProvider dateTimeProvider,

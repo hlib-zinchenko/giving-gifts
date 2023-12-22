@@ -41,16 +41,10 @@ public class WishlistsDbContextEf : DbContext
 
     private async Task SendEvents()
     {
-        // ignore events if no dispatcher provided
-        if (_mediator == null)
-        {
-            return;
-        }
-
         var entitiesWithEvents = ChangeTracker
             .Entries()
             .Select(e => e.Entity as IEntity)
-            .Where(e => e is { Events: not null } && e.Events.Any())
+            .Where(e => e is { Events: not null } && e.Events.Count != 0)
             .ToArray();
 
         foreach (var entity in entitiesWithEvents)

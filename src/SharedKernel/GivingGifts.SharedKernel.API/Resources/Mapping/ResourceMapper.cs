@@ -13,6 +13,7 @@ public class ResourceMapper : IResourceMapper
         _serviceProvider = serviceProvider;
         _cache = new Dictionary<(Type, Type), object>();
     }
+
     public TDestination Map<TSource, TDestination>(TSource source)
     {
         var mapFunction = GetMapper<TSource, TDestination>();
@@ -43,10 +44,11 @@ public class ResourceMapper : IResourceMapper
     private DedicatedResourceMapper<TSource, TDestination> GetMapper<TSource, TDestination>()
     {
         var key = (typeof(TSource), typeof(TDestination));
-        if(_cache.TryGetValue(key, out var value))
+        if (_cache.TryGetValue(key, out var value))
         {
             return (value as DedicatedResourceMapper<TSource, TDestination>)!;
         }
+
         var dedicatedMapper = _serviceProvider.GetRequiredService<DedicatedResourceMapper<TSource, TDestination>>();
         _cache[key] = dedicatedMapper;
         return dedicatedMapper;

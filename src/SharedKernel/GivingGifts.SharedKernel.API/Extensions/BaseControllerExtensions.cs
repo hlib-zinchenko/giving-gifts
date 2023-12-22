@@ -44,7 +44,7 @@ public static class BaseControllerExtensions
         return controller;
     }
     
-    public static ControllerBase AddAllowHeader(this ControllerBase controller, HttpMethod[] allowedMethods)
+    public static ControllerBase AddAllowHeader(this ControllerBase controller, IEnumerable<HttpMethod> allowedMethods)
     {
         var methods = OptionsMethod.Union(allowedMethods.Select(m => m.Method)).Distinct();
         controller.Response.Headers.Append(HttpHeaders.Allow, string.Join(", ", methods));

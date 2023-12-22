@@ -73,7 +73,7 @@ public class CreateWishesCommandHandlerHandle
 
         _userContext.UserId.Returns(_ => currentUserId);
         _repository.GetAsync(Arg.Any<Guid>())!
-            .Returns(p => Task.FromResult(existingWishlist));
+            .Returns(_ => Task.FromResult(existingWishlist));
         _repository.SaveChangesAsync().Returns(_ => Task.CompletedTask);
         var command = new CreateWishesCommand(wishlistId, [
             new CreateWishDto("TestName", null, null),
@@ -92,8 +92,8 @@ public class CreateWishesCommandHandlerHandle
         var wishlistId = Guid.NewGuid();
 
         _userContext.UserId.Returns(_ => currentUserId);
-        _repository.GetAsync(Arg.Any<Guid>())!
-            .Returns(p => Task.FromResult<Wishlist?>(null));
+        _repository.GetAsync(Arg.Any<Guid>())
+            .Returns(_ => Task.FromResult<Wishlist?>(null));
         _repository.SaveChangesAsync().Returns(_ => Task.CompletedTask);
         var command = new CreateWishesCommand(wishlistId, [
             new CreateWishDto("TestName", null, null),
